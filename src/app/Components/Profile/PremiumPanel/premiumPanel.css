@@ -1,0 +1,158 @@
+.premium-panel {
+    background: #1a1a2e;
+    color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+}
+
+.premium-panel h2 {
+    font-size: 26px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #b621fe, #1e90ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.premium-text {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.premium-features {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(255, 0, 255, 0.2);
+}
+
+.premium-features h3 {
+    font-size: 20px;
+    color: #ffcc00;
+    margin-bottom: 10px;
+}
+
+.premium-features ul {
+    list-style: none;
+    padding: 0;
+}
+
+.premium-features li {
+    font-size: 15px;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ddd;
+}
+
+.premium-features li:last-child {
+    border-bottom: none;
+}
+
+.subscribe-btn {
+    background: linear-gradient(90deg, #ff1493, #8a2be2);
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.subscribe-btn:hover {
+    background: linear-gradient(90deg, #8a2be2, #ff1493);
+    box-shadow: 0 4px 15px rgba(255, 20, 147, 0.5);
+    transform: scale(1.05);
+}
+
+.cancel-btn {
+    background: linear-gradient(90deg, #ff4500, #dc143c);
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.cancel-btn:hover {
+    background: linear-gradient(90deg, #dc143c, #ff4500);
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.5);
+    transform: scale(1.05);
+}
+
+.MuiDialog-paper {
+    background: #2c2c54 !important;
+    color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(138, 43, 226, 0.4) !important;
+}
+
+.MuiDialogTitle-root {
+    background: linear-gradient(90deg, #b621fe, #1e90ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.MuiTextField-root {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 6px !important;
+    color: white !important;
+}
+
+.MuiOutlinedInput-root {
+    color: white !important;
+}
+
+.MuiFormControlLabel-label {
+    color: white !important;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(38, 38, 38, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(136, 15, 79, 0.4);
+    text-align: center;
+}
+
+.loading-spinner {
+    color: #080808 !important;
+    margin-bottom: 10px;
+}
+
+.loading-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
+
+.MuiSnackbar-root {
+    bottom: 20px !important;
+}
+
+.MuiAlert-root {
+    background: linear-gradient(90deg, #b621fe, #1e90ff) !important;
+    color: white !important;
+    font-weight: bold !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3);
+    width: 600px !important;
+}

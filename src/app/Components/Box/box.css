@@ -1,0 +1,134 @@
+.custom-wrapper {
+  display: flex;
+  width: 90%;
+  margin: 30px auto;
+  gap: 30px;
+  flex-wrap: wrap;
+  padding: 30px 0;
+  justify-content: space-around;
+
+  .custom-box {
+    width: 410px;
+    height: 550px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    &:hover .wishIcon {
+      opacity: 1;
+    }
+
+    .wishIcon {
+      position: absolute;
+      z-index: 1;
+      right: 5px;
+      top: 8px;
+      transition: 0.4s;
+      opacity: 0;
+    }
+  }
+
+  .custom-item {
+    height: 540px;
+    width: 400px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+    }
+
+    .linelike {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      z-index: 9999;
+    }
+
+    .custom-text {
+      color: white;
+      font-size: 24px;
+      background: #000000ec;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      padding: 30px 0 5px 0;
+
+      h5 {
+        color: gold;
+        cursor: pointer;
+      }
+
+      span {
+        font-size: 15px;
+        color: rgb(113, 8, 169);
+
+        em {
+          color: #fff;
+        }
+      }
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      width: 180%;
+      height: 50%;
+      background: #0f0;
+      filter: hue-rotate(var(--a));
+      transform: rotate(var(--a));
+      animation: Rotation 6s linear infinite;
+    }
+
+    &::after {
+      content: "";
+      inset: 5px;
+    }
+  }
+
+  .imdb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 10px 0;
+    gap: 5px;
+  }
+
+  .custom-icon {
+    font-size: 100px;
+    color: #fff;
+    transition: 0.5s;
+    position: absolute;
+    z-index: 999;
+  }
+}
+
+@property --a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes Rotation {
+  0% {
+    --a: 0deg;
+  }
+  100% {
+    --a: 360deg;
+  }
+}

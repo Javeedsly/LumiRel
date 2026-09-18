@@ -1,0 +1,125 @@
+header, footer{
+  display: none;
+}
+
+.add-film-container {
+  padding: 20px;
+  background: #0a192f;
+  color: #e0e0e0;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.layout{
+  display: flex;
+}
+
+.add-film-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.add-film-form {
+  width: 600px;
+  height: 620px;
+  border: 1px solid #1c3d5a;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.form-step {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #1c3d5a;
+  border-radius: 5px;
+  background: #112240;
+  color: #e0e0e0;
+  font-size: 16px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.error {
+  color: #ff4d4d;
+  font-size: 14px;
+}
+
+.poster-preview {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.trailer-preview {
+  width: 100%;
+  height: 250px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.actor-section {
+  margin-top: 15px;
+}
+
+.actor-item {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.actor-item input {
+  flex: 1;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.back-button,
+.next-button,
+.submit-button {
+  background: #ff4d4d;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+  margin-top: 30px;
+}
+
+.back-button:hover,
+.next-button:hover,
+.submit-button:hover {
+  background: #e60000;
+}
+
+.added-film-preview {
+  margin-top: 20px;
+  padding: 15px;
+  background: #1c3d5a;
+  border-radius: 5px;
+  width: 100%;
+  font-family: monospace;
+  font-size: 14px;
+}

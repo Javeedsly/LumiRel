@@ -1,0 +1,318 @@
+.main-allfilms {
+    background: url(https://images.pexels.com/photos/2531709/pexels-photo-2531709.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2);
+    width: 100%;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: fadeIn 1s ease-in-out;
+}
+
+
+.section-allfilms {
+    width: 87%;
+    overflow-x: hidden;
+    margin: 30px auto;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+    background: rgba(6, 6, 6, 0.83);
+}
+
+.poster-section {
+    margin: 30px auto;
+    padding-top: 17px;
+}
+
+h4 {
+    color: rgb(255, 179, 0);
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.3);
+    margin: 30px;
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.category-films-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-film-section {
+    margin: 30px auto;
+    padding: 30px 0;
+    position: relative;
+}
+
+.category-film-item {
+    width: 250px;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.category-film-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 6px 20px rgba(255, 255, 255, 0.2);
+}
+.category-film-item:hover .wish-icon{
+    opacity: 1;
+}
+.wish-icon{
+    opacity: 0;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+.category-film-section {
+    margin: 30px auto;
+    padding-top: 17px;
+}
+
+.category-film-item img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.film-info {
+    padding: 10px;
+    color: white;
+    text-align: center;
+}
+
+.film-info h5 {
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #7d6fff;
+    text-shadow: 1px 1px 5px rgba(140, 102, 255, 0.5);
+}
+
+.film-info span {
+    display: block;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 3px;
+}
+.posters {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    padding: 25px 0 0 0;
+}
+
+.poster-item {
+    width: 270px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(32, 28, 28, 0.9), rgba(50, 50, 50, 0.7));
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.poster-item:hover {
+    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.2);
+}
+
+.poster-item .like-section {
+    position: absolute;
+    right: 4px;
+    top: 1px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.poster-item:hover .like-section {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.poster-item .like-section:hover {
+    transform: scale(1.1);
+}
+
+.poster-info {
+    padding-left: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.poster-info h5 {
+    font-size: 16px;
+    cursor: pointer;
+    color: #7d6fff;
+    text-shadow: 1px 1px 5px rgba(140, 102, 255, 0.5);
+}
+
+.poster-info span {
+    display: block;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 5px;
+}
+
+
+.imgP {
+    width: 100px;
+    height: 100px;
+}
+
+.imgP img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+.allfilms-slide {
+    display: flex;
+    position: relative;
+    z-index: 10;
+    gap: 15px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.unveil-more-btn {
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 1px solid rgb(255, 191, 0);
+    background: rgb(255, 166, 0);
+    border-radius: 40px;
+    cursor: pointer;
+    position: absolute;
+    right: 33px;
+    bottom: -35px;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+
+.unveil-more-btn:hover {
+    background: transparent;
+    color: #fff;
+}
+
+.allfilms-slide {
+    height: 264px;
+}
+
+.film-card {
+    flex: 1;
+    max-width: 300px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+    overflow: hidden;
+    position: relative;
+
+    .wishicon {
+        position: absolute;
+        right: 6px;
+        top: 7px;
+        cursor: pointer;
+        opacity: 0;
+    }
+}
+
+
+
+.film-card:hover .wishicon {
+    opacity: 1;
+}
+
+.film-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+
+}
+
+.film-info-carousel {
+    margin-top: 10px;
+    color: white;
+    bottom: 0;
+    padding: 10px 0 2px 0;
+    position: absolute;
+    z-index: 29;
+    width: 100%;
+    overflow: hidden;
+    background: #000000d0;
+}
+.film-info {
+    margin-top: 10px;
+    color: white;
+    bottom: 0;
+    padding: 10px 0 2px 0;
+    position: absolute;
+    z-index: 29;
+    width: 100%;
+    overflow: hidden;
+    background: #000000d0;
+}
+.film-info-carousel h2 {
+    font-size: 17px;
+    height: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    color: #7d6fff;
+    text-shadow: rgba(140, 102, 255, 0.5);
+}
+
+.film-info-carousel p {
+    font-size: 14px;
+    margin: 5px 0;
+
+    color: rgb(234 179 8);
+
+    strong {
+        color: #fff;
+    }
+}
+
+
+
+.modal-overlay {
+    z-index: 10000 !important;
+}
+
+.modal {
+    z-index: 10001 !important;
+}

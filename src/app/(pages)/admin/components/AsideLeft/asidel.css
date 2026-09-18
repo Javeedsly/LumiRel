@@ -1,0 +1,207 @@
+.admin-aside-left {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #0d1b2a, #1b263b);
+  color: #fff;
+  padding: 25px 20px;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid #00a8ff;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #00a8ff transparent; 
+}
+
+aside{
+  z-index: 1;
+  height: 100%;
+}
+
+.admin-aside-left::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-aside-left::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-aside-left::-webkit-scrollbar-thumb {
+  background: #00a8ff;
+  border-radius: 10px;
+}
+
+.admin-aside-left::-webkit-scrollbar-thumb:hover {
+  background: #0080ff;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.logo h2 {
+  font-size: 26px;
+  font-weight: bold;
+  color: #00a8ff;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.admin-aside-left nav .mainmenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-aside-left nav .mainmenu li {
+  margin: 20px 0;
+  position: relative;
+}
+
+.admin-aside-left nav .mainmenu li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #e0e0e0;
+  font-size: 20px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  position: relative;
+  font-weight: 500;
+  overflow: hidden;
+}
+
+.admin-aside-left nav .mainmenu li a .icon {
+  margin-right: 14px;
+  font-size: 24px;
+  color: #00a8ff;
+  transition: transform 0.3s ease;
+}
+
+.admin-aside-left nav .mainmenu li a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateX(10px);
+  color: #fff;
+}
+
+.admin-aside-left nav .mainmenu li a:hover .icon {
+  transform: scale(1.3);
+}
+
+.admin-aside-left nav .mainmenu li a::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6px;
+  height: 75%;
+  background: #00a8ff;
+  border-radius: 5px;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-aside-left nav .mainmenu li a:hover::before {
+  opacity: 1;
+}
+
+.down {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  height: 100%;
+  width: 45px;
+  display: flex;
+  transition: 0.4s;
+  display: none;
+}
+
+#dropdown {
+  font-size: 18px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  opacity: 0;
+}
+
+.admin-aside-left nav .mainmenu li a:hover .down {
+  display: flex;
+  opacity: 1;
+}
+
+.down:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.submenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+.submenu li {
+  margin: 0 !important;
+}
+
+.submenu li a {
+  font-size: 15px !important;
+  color: #e0e0e0;
+  padding: 20px 30px !important;
+  width: 85%;
+}
+
+.submenu li a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.submenu.open {
+  max-height: 400px;
+  opacity: 1;
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.logout {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.logout-btn {
+  width: 200px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 6px;
+  transition: background 0.3s ease-in-out;
+}
+
+.logout-btn:hover {
+  background: #e60000;
+}

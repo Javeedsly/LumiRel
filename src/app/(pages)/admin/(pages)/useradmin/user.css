@@ -1,0 +1,15 @@
+header,
+footer {
+  display: none;
+}
+
+main {
+  display: flex;
+  width: 100%;
+}
+
+.layout {
+  width: 100%;
+  display: flex;
+}
+

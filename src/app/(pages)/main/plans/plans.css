@@ -1,0 +1,60 @@
+.plans-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background: linear-gradient(135deg, #1e1e2f, #252540);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    color: white;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+  
+    .plans-title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ff9f1c;
+    }
+  
+    .plans-subtitle {
+      font-size: 16px;
+      color: #ddd;
+      margin-bottom: 25px;
+    }
+  
+    .plans-table {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+  
+      .plan-card {
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+        text-align: left;
+  
+        h3 {
+          font-size: 20px;
+          margin-bottom: 10px;
+        }
+  
+        p {
+          font-size: 14px;
+          color: #ccc;
+        }
+  
+        &.free {
+          background: rgba(255, 0, 0, 0.2);
+          border-left: 5px solid #ff4d4d;
+        }
+  
+        &.premium {
+          background: rgba(255, 191, 0, 0.2);
+          border-left: 5px solid #ff9f1c;
+        }
+      }
+    }
+  }
+  

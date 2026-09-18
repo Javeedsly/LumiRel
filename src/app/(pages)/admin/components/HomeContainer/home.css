@@ -1,0 +1,44 @@
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(135deg, #0b132b, #1c2541);
+    color: aliceblue;
+  }
+  
+  .home-content {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 40px 60px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+  }
+  
+  .admin-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid white;
+    margin-bottom: 15px;
+  }
+  
+  .welcome-text {
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  
+  .admin-info {
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 5px;
+    color: #89c3ff;
+  }
+  
+  .admin-aside-left{
+      background-color: aqua;
+      
+  }
