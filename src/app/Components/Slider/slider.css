@@ -3,7 +3,13 @@
   flex-direction: column;
 
   width: min(
-    calc(100% - (var(--page-gutter) * 2)),
+    calc(
+      100% -
+      (
+        var(--page-gutter) *
+        2
+      )
+    ),
     1360px
   );
 
@@ -20,35 +26,53 @@
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.07);
+    rgba(
+      255,
+      255,
+      255,
+      0.07
+    );
 
   border-radius: 24px;
 
-  background: #09090b;
+  background: #060608;
 
   box-shadow:
     0 30px 90px
-    rgba(0, 0, 0, 0.38);
+    rgba(
+      0,
+      0,
+      0,
+      0.38
+    );
 }
 
 .hero-noise {
   position: absolute;
   inset: 0;
 
-  z-index: 4;
+  z-index: 5;
 
-  opacity: 0.04;
+  opacity: 0.025;
 
   pointer-events: none;
 
   background-image:
     radial-gradient(
-      rgba(255, 255, 255, 0.65) 0.5px,
-      transparent 0.5px
+      rgba(
+        255,
+        255,
+        255,
+        0.65
+      )
+      0.5px,
+      transparent
+      0.5px
     );
 
   background-size:
-    5px 5px;
+    5px
+    5px;
 }
 
 .slider .container {
@@ -60,9 +84,9 @@
 
   height:
     clamp(
-      460px,
-      48vw,
-      650px
+      470px,
+      42vw,
+      590px
     );
 
   overflow: hidden;
@@ -76,8 +100,11 @@
   flex: 0 0 100%;
 
   width: 100%;
+  height: 100%;
 
   overflow: hidden;
+
+  isolation: isolate;
 
   transition:
     transform
@@ -90,30 +117,108 @@
     );
 }
 
-.slider .image {
+/*
+  BLURRED BACKGROUND
+
+  Main image "contain" istifadə etdiyi üçün
+  qalan boş sahəni eyni şəkilin blur edilmiş
+  cover variantı doldurur.
+*/
+.hero-image-backdrop {
   position: absolute;
+
+  inset: -30px;
+
+  z-index: -3;
+
+  background-position:
+    center;
+
+  background-size:
+    cover;
+
+  background-repeat:
+    no-repeat;
+
+  filter:
+    blur(26px)
+    brightness(0.42)
+    saturate(0.8);
+
+  transform:
+    scale(1.09);
+
+  opacity: 0.88;
+}
+
+/*
+  MAIN IMAGE
+
+  Burada COVER YOXDUR.
+  "contain" sayəsində şəkil bütövlükdə görünür.
+*/
+.hero-image-full {
+  position: absolute;
+
   inset: 0;
 
-  z-index: 0;
+  z-index: -2;
 
   width: 100%;
   height: 100%;
 
-  background-position: center 25%;
-  background-size: cover;
-  background-repeat: no-repeat;
+  background-position:
+    center;
 
-  opacity: 0.78;
+  background-size:
+    contain;
 
-  transform: scale(1.015);
+  background-repeat:
+    no-repeat;
+
+  opacity: 0.94;
+
+  transform:
+    scale(1);
 
   transition:
-    transform 9s ease,
-    opacity 0.7s ease;
+    opacity 0.65s ease,
+    transform 9s ease;
 }
 
-.slider .slide.active .image {
-  transform: scale(1.065);
+.slider
+.slide.active
+.hero-image-full {
+  transform:
+    scale(1.012);
+}
+
+/*
+  Blurred background ilə main image arasında
+  yumşaq keçid.
+*/
+.slider .slide::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: -1;
+
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 45%,
+      rgba(
+        3,
+        3,
+        5,
+        0.3
+      )
+      100%
+    );
+
+  pointer-events: none;
 }
 
 .hero-vignette {
@@ -125,15 +230,58 @@
   background:
     linear-gradient(
       90deg,
-      rgba(2, 2, 3, 0.97) 0%,
-      rgba(2, 2, 3, 0.86) 28%,
-      rgba(2, 2, 3, 0.42) 58%,
-      rgba(2, 2, 3, 0.12) 100%
+      rgba(
+        2,
+        2,
+        3,
+        0.96
+      )
+      0%,
+
+      rgba(
+        2,
+        2,
+        3,
+        0.78
+      )
+      24%,
+
+      rgba(
+        2,
+        2,
+        3,
+        0.34
+      )
+      48%,
+
+      rgba(
+        2,
+        2,
+        3,
+        0.08
+      )
+      72%,
+
+      rgba(
+        2,
+        2,
+        3,
+        0.12
+      )
+      100%
     ),
     linear-gradient(
       0deg,
-      rgba(2, 2, 3, 0.75) 0%,
-      transparent 38%
+      rgba(
+        2,
+        2,
+        3,
+        0.54
+      )
+      0%,
+
+      transparent
+      42%
     );
 
   pointer-events: none;
@@ -150,16 +298,21 @@
   justify-content: center;
   align-items: flex-start;
 
-  width: min(700px, 68%);
+  width:
+    min(
+      650px,
+      52%
+    );
 
   padding:
     clamp(
       34px,
-      6vw,
-      78px
+      5vw,
+      68px
     );
 
-  color: var(--lm-text-soft);
+  color:
+    var(--lm-text-soft);
 }
 
 .hero-kicker {
@@ -190,32 +343,43 @@
 
   box-shadow:
     0 0 12px
-    rgba(150, 99, 239, 0.8);
+    rgba(
+      150,
+      99,
+      239,
+      0.8
+    );
 }
 
 .slider .content h1 {
-  max-width: 700px;
+  max-width: 620px;
 
   color: white;
 
   font-size:
     clamp(
       38px,
-      6vw,
-      76px
+      5vw,
+      68px
     );
 
   font-weight: 700;
 
-  line-height: 0.99;
+  line-height: 1;
 
-  letter-spacing: -0.055em;
+  letter-spacing:
+    -0.052em;
 
   text-wrap: balance;
 
   text-shadow:
-    0 6px 30px
-    rgba(0, 0, 0, 0.65);
+    0 5px 28px
+    rgba(
+      0,
+      0,
+      0,
+      0.7
+    );
 }
 
 .hero-meta {
@@ -226,7 +390,7 @@
 
   gap: 8px;
 
-  margin-top: 19px;
+  margin-top: 18px;
 
   color: #aaa6b0;
 
@@ -247,17 +411,29 @@
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.07);
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
 
   border-radius: 999px;
 
   background:
-    rgba(0, 0, 0, 0.24);
+    rgba(
+      5,
+      5,
+      7,
+      0.52
+    );
 
-  backdrop-filter: blur(8px);
+  backdrop-filter:
+    blur(10px);
 }
 
-.hero-meta .hero-rating {
+.hero-meta
+.hero-rating {
   gap: 5px;
 
   color: #e8c66f;
@@ -284,33 +460,67 @@
 
   border:
     1px solid
-    rgba(154, 112, 239, 0.17);
+    rgba(
+      154,
+      112,
+      239,
+      0.2
+    );
 
   border-radius: 999px;
 
   background:
-    rgba(143, 92, 246, 0.06);
+    rgba(
+      15,
+      10,
+      22,
+      0.58
+    );
 
-  color: #b69bdd;
+  backdrop-filter:
+    blur(8px);
+
+  color: #bca2e8;
 
   font-size: 10px;
   font-weight: 600;
 }
 
 .hero-summary {
-  max-width: 620px;
+  display:
+    -webkit-box;
+
+  max-width: 560px;
+
+  overflow: hidden;
 
   margin-top: 17px;
 
-  color: #aaa6af;
+  color: #c1bdc5;
 
-  font-size: clamp(
-    13px,
-    1.3vw,
-    15px
-  );
+  font-size:
+    clamp(
+      13px,
+      1.25vw,
+      15px
+    );
 
   line-height: 1.72;
+
+  text-shadow:
+    0 2px 12px
+    rgba(
+      0,
+      0,
+      0,
+      0.9
+    );
+
+  -webkit-box-orient:
+    vertical;
+
+  -webkit-line-clamp:
+    3;
 }
 
 .hero-actions {
@@ -321,7 +531,7 @@
 
   gap: 10px;
 
-  margin-top: 25px;
+  margin-top: 24px;
 }
 
 .hero-primary,
@@ -367,47 +577,88 @@
 
   box-shadow:
     0 12px 32px
-    rgba(128, 71, 217, 0.27);
+    rgba(
+      128,
+      71,
+      217,
+      0.27
+    );
 }
 
 .hero-primary:hover {
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 
   box-shadow:
     0 16px 40px
-    rgba(128, 71, 217, 0.37);
+    rgba(
+      128,
+      71,
+      217,
+      0.37
+    );
 }
 
 .hero-secondary {
   border:
     1px solid
-    rgba(255, 255, 255, 0.13);
+    rgba(
+      255,
+      255,
+      255,
+      0.14
+    );
 
   background:
-    rgba(255, 255, 255, 0.055);
+    rgba(
+      7,
+      7,
+      9,
+      0.58
+    );
 
   color: #e0dce5;
 
-  backdrop-filter: blur(8px);
+  backdrop-filter:
+    blur(10px);
 }
 
 .hero-secondary:hover {
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 
   border-color:
-    rgba(158, 114, 247, 0.34);
+    rgba(
+      158,
+      114,
+      247,
+      0.34
+    );
 
   background:
-    rgba(143, 92, 246, 0.1);
+    rgba(
+      143,
+      92,
+      246,
+      0.13
+    );
 
   color: white;
 }
+
+/* THUMBNAILS */
 
 .thumbnails {
   display: grid;
 
   grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+    repeat(
+      4,
+      minmax(
+        0,
+        1fr
+      )
+    );
 
   gap: 10px;
 
@@ -420,28 +671,41 @@
   display: grid;
 
   grid-template-columns:
-    62px
-    minmax(0, 1fr);
+    58px
+    minmax(
+      0,
+      1fr
+    );
 
   align-items: center;
 
-  gap: 12px;
+  gap: 11px;
 
   min-width: 0;
-  min-height: 90px;
+  min-height: 84px;
 
-  padding: 9px;
+  padding: 8px;
 
   overflow: hidden;
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.06);
+    rgba(
+      255,
+      255,
+      255,
+      0.06
+    );
 
-  border-radius: 14px;
+  border-radius: 13px;
 
   background:
-    rgba(255, 255, 255, 0.022);
+    rgba(
+      255,
+      255,
+      255,
+      0.022
+    );
 
   color: white;
 
@@ -454,21 +718,42 @@
 }
 
 .thumbnail:hover {
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 
   border-color:
-    rgba(154, 111, 239, 0.2);
+    rgba(
+      154,
+      111,
+      239,
+      0.2
+    );
 
   background:
-    rgba(255, 255, 255, 0.04);
+    rgba(
+      255,
+      255,
+      255,
+      0.04
+    );
 }
 
 .thumbnail.active {
   border-color:
-    rgba(153, 107, 246, 0.33);
+    rgba(
+      153,
+      107,
+      246,
+      0.33
+    );
 
   background:
-    rgba(143, 92, 246, 0.075);
+    rgba(
+      143,
+      92,
+      246,
+      0.075
+    );
 }
 
 .thumbnail img {
@@ -476,10 +761,11 @@
 
   z-index: 2;
 
-  width: 62px;
-  height: 72px;
+  width: 58px;
 
-  border-radius: 9px;
+  aspect-ratio: 2 / 3;
+
+  border-radius: 8px;
 
   object-fit: cover;
 }
@@ -493,7 +779,8 @@
 }
 
 .thumbnail-copy span {
-  display: -webkit-box;
+  display:
+    -webkit-box;
 
   overflow: hidden;
 
@@ -504,8 +791,11 @@
 
   line-height: 1.35;
 
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-box-orient:
+    vertical;
+
+  -webkit-line-clamp:
+    2;
 }
 
 .thumbnail-copy small {
@@ -530,7 +820,12 @@
   height: 100%;
 
   background:
-    rgba(143, 92, 246, 0.055);
+    rgba(
+      143,
+      92,
+      246,
+      0.055
+    );
 }
 
 .thumbnail.active
@@ -542,45 +837,72 @@
     forwards;
 }
 
+/* LOADING */
+
 .slider--loading {
-  min-height: 500px;
+  min-height: 470px;
 }
 
 .hero-skeleton {
   width: 100%;
-  height: 520px;
+
+  height:
+    clamp(
+      470px,
+      42vw,
+      590px
+    );
 
   border-radius: 24px;
 
   background:
     linear-gradient(
       100deg,
-      #0b0b0d 20%,
-      #15151a 45%,
-      #0b0b0d 70%
+      #0b0b0d
+      20%,
+      #15151a
+      45%,
+      #0b0b0d
+      70%
     );
 
-  background-size: 200% 100%;
+  background-size:
+    200%
+    100%;
 
   animation:
     heroSkeleton
     1.5s
-    infinite linear;
+    infinite
+    linear;
 }
 
 .slider-error {
   width: min(
-    calc(100% - (var(--page-gutter) * 2)),
+    calc(
+      100% -
+      (
+        var(--page-gutter) *
+        2
+      )
+    ),
     1360px
   );
 
-  margin: 40px auto;
+  margin:
+    40px
+    auto;
 
   padding: 30px;
 
   border:
     1px solid
-    rgba(255, 105, 120, 0.14);
+    rgba(
+      255,
+      105,
+      120,
+      0.14
+    );
 
   border-radius: 16px;
 
@@ -601,87 +923,185 @@
 
 @keyframes heroSkeleton {
   from {
-    background-position: 200% 0;
+    background-position:
+      200%
+      0;
   }
 
   to {
-    background-position: -200% 0;
+    background-position:
+      -200%
+      0;
   }
 }
 
-@media (max-width: 950px) {
-  .slider .container {
+/* TABLET */
+
+@media (
+  max-width:
+    1024px
+) {
+  .slider
+  .container {
     height:
       clamp(
-        470px,
-        68vw,
-        590px
+        450px,
+        55vw,
+        540px
       );
   }
 
-  .slider .content {
-    width: min(660px, 80%);
+  .slider
+  .content {
+    width:
+      min(
+        620px,
+        62%
+      );
 
     padding:
       clamp(
         30px,
-        6vw,
-        55px
+        5vw,
+        50px
       );
+  }
+
+  .hero-image-full {
+    background-position:
+      center;
   }
 
   .thumbnails {
     grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
   }
 }
 
-@media (max-width: 620px) {
+/* MOBILE */
+
+@media (
+  max-width:
+    680px
+) {
   .hero-frame {
     border-radius: 19px;
   }
 
-  .slider .container {
-    height: 535px;
+  .slider
+  .container {
+    height:
+      clamp(
+        500px,
+        132vw,
+        560px
+      );
   }
 
-  .slider .content {
-    width: 100%;
+  /*
+    Mobile-də əsas şəkli yuxarı tərəfdə saxlayırıq,
+    amma yenə contain-dir, yəni kəsilmir.
+  */
+  .hero-image-full {
+    background-position:
+      center
+      top;
 
-    justify-content: flex-end;
+    background-size:
+      contain;
 
-    padding:
-      30px
-      22px;
+    opacity: 0.91;
+  }
+
+  .hero-image-backdrop {
+    filter:
+      blur(24px)
+      brightness(0.34)
+      saturate(0.78);
   }
 
   .hero-vignette {
     background:
       linear-gradient(
         0deg,
-        rgba(2, 2, 3, 0.98) 0%,
-        rgba(2, 2, 3, 0.86) 32%,
-        rgba(2, 2, 3, 0.35) 68%,
-        rgba(2, 2, 3, 0.08) 100%
+        rgba(
+          2,
+          2,
+          3,
+          0.99
+        )
+        0%,
+
+        rgba(
+          2,
+          2,
+          3,
+          0.94
+        )
+        25%,
+
+        rgba(
+          2,
+          2,
+          3,
+          0.63
+        )
+        49%,
+
+        rgba(
+          2,
+          2,
+          3,
+          0.14
+        )
+        75%,
+
+        rgba(
+          2,
+          2,
+          3,
+          0.05
+        )
+        100%
       );
   }
 
-  .slider .content h1 {
+  .slider
+  .content {
+    width: 100%;
+
+    justify-content:
+      flex-end;
+
+    padding:
+      28px
+      21px;
+  }
+
+  .slider
+  .content
+  h1 {
+    max-width: 100%;
+
     font-size:
       clamp(
-        37px,
-        12vw,
-        54px
+        35px,
+        11vw,
+        50px
       );
   }
 
   .hero-summary {
-    display: -webkit-box;
+    max-width: 100%;
 
-    overflow: hidden;
-
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp:
+      3;
   }
 
   .thumbnails {
@@ -696,6 +1116,10 @@
       1px
       6px;
 
+    scroll-snap-type:
+      x
+      mandatory;
+
     scrollbar-width: none;
   }
 
@@ -704,19 +1128,32 @@
   }
 
   .thumbnail {
-    flex: 0 0 190px;
+    flex:
+      0
+      0
+      190px;
+
+    scroll-snap-align:
+      start;
   }
 }
 
-@media (max-width: 390px) {
-  .slider .container {
+/* SMALL MOBILE */
+
+@media (
+  max-width:
+    390px
+) {
+  .slider
+  .container {
     height: 510px;
   }
 
-  .slider .content {
+  .slider
+  .content {
     padding:
-      26px
-      18px;
+      25px
+      17px;
   }
 
   .hero-actions {
@@ -726,5 +1163,58 @@
   .hero-primary,
   .hero-secondary {
     flex: 1;
+
+    min-width: 0;
+
+    padding-inline: 13px;
+
+    font-size: 12px;
+  }
+
+  .hero-meta {
+    gap: 6px;
+  }
+
+  .hero-meta
+  > span {
+    padding-inline: 8px;
+  }
+}
+
+@media (
+  max-width:
+    360px
+) {
+  .slider
+  .container {
+    height: 490px;
+  }
+
+  .slider
+  .content
+  h1 {
+    font-size: 34px;
+  }
+
+  .hero-summary {
+    font-size: 12px;
+  }
+}
+
+/* REDUCED MOTION */
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+  .hero-image-full,
+  .slider
+  .slide {
+    transition: none;
+  }
+
+  .thumbnail.active
+  .thumbnail-bg {
+    animation: none;
   }
 }

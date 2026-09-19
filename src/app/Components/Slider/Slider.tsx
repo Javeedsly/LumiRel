@@ -40,8 +40,7 @@ const Slider = () => {
   const [
     currentSlide,
     setCurrentSlide,
-  ] =
-    useState(0);
+  ] = useState(0);
 
   const {
     films: data,
@@ -262,11 +261,24 @@ const Slider = () => {
                   }}
                 >
                   <div
-                    className="image"
+                    className="hero-image-backdrop"
                     style={{
                       backgroundImage:
                         `url(${item.poster})`,
                     }}
+                    aria-hidden="true"
+                  />
+
+                  <div
+                    className="hero-image-full"
+                    style={{
+                      backgroundImage:
+                        `url(${item.poster})`,
+                    }}
+                    role="img"
+                    aria-label={
+                      item.title
+                    }
                   />
 
                   <div className="hero-vignette" />
@@ -285,15 +297,13 @@ const Slider = () => {
                           : 12,
                     }}
                     transition={{
-                      duration:
-                        0.6,
+                      duration: 0.6,
                     }}
                   >
                     <div className="hero-kicker">
                       <span className="hero-dot" />
 
-                      LumiReel
-                      Featured
+                      LumiReel Featured
                     </div>
 
                     <h1>
@@ -423,6 +433,7 @@ const Slider = () => {
                   index
                 )
               }
+              aria-label={`${item.title} filmini göstər`}
             >
               <div className="thumbnail-bg" />
 
