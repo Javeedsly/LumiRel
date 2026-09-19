@@ -1,33 +1,47 @@
 .home {
   position: relative;
+
   width: 100%;
+
   overflow: hidden;
-  padding-bottom: 80px;
+
+  padding-bottom:
+    clamp(60px, 8vw, 100px);
 }
 
 .ambientOne,
 .ambientTwo {
   position: absolute;
+
   z-index: -1;
-  pointer-events: none;
+
   border-radius: 50%;
-  filter: blur(110px);
+
+  pointer-events: none;
+
+  filter: blur(120px);
 }
 
 .ambientOne {
-  top: 300px;
-  left: -200px;
-  width: 520px;
-  height: 520px;
-  background: rgba(128, 52, 243, 0.12);
+  top: 350px;
+  left: -250px;
+
+  width: 540px;
+  height: 540px;
+
+  background:
+    rgba(128, 72, 220, 0.09);
 }
 
 .ambientTwo {
-  top: 1050px;
-  right: -220px;
-  width: 600px;
-  height: 600px;
-  background: rgba(0, 182, 255, 0.08);
+  top: 1100px;
+  right: -280px;
+
+  width: 620px;
+  height: 620px;
+
+  background:
+    rgba(45, 94, 160, 0.055);
 }
 
 .hero {
@@ -38,175 +52,208 @@
 .experienceSection,
 .cta {
   width: min(
-    calc(100% - 40px),
+    calc(100% - (var(--page-gutter) * 2)),
     1320px
   );
+
   margin-inline: auto;
 }
 
 .intro,
 .experienceSection {
-  margin-top: 70px;
+  margin-top:
+    clamp(58px, 7vw, 92px);
 }
 
 .sectionBadge {
   display: inline-flex;
   align-items: center;
+
   gap: 8px;
 
-  padding: 8px 12px;
+  min-height: 34px;
 
-  border: 1px solid rgba(165, 107, 255, 0.2);
+  padding:
+    6px
+    12px;
+
+  border:
+    1px solid
+    rgba(156, 111, 244, 0.19);
+
   border-radius: 999px;
 
-  background: rgba(128, 52, 243, 0.07);
+  background:
+    rgba(143, 92, 246, 0.055);
 
-  color: #bfa9ff;
+  color: #bca4ef;
 
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
 
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .sectionHeading {
   display: flex;
+
   align-items: flex-end;
   justify-content: space-between;
-  gap: 30px;
+
+  gap: 32px;
 
   margin-top: 18px;
 }
 
 .sectionHeading h2 {
-  max-width: 720px;
+  max-width: 730px;
 
   margin-top: 7px;
 
-  color: white;
+  color: #f7f5fa;
 
   font-size: clamp(
-    31px,
-    5vw,
+    32px,
+    4.7vw,
     58px
   );
 
-  line-height: 1.05;
+  line-height: 1.06;
 
-  letter-spacing: -0.035em;
+  letter-spacing: -0.045em;
 }
 
 .eyebrow {
-  color: #8969e8;
+  color: #8f72d4;
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 
-  letter-spacing: 0.16em;
+  letter-spacing: 0.17em;
   text-transform: uppercase;
 }
 
 .sectionDescription {
-  max-width: 660px;
+  max-width: 650px;
 
   margin-top: 20px;
 
-  color: #96949d;
+  color: #918e98;
 
   font-size: clamp(
     14px,
-    1.5vw,
-    17px
+    1.3vw,
+    16px
   );
 
-  line-height: 1.75;
+  line-height: 1.8;
 }
 
 .textLink {
   display: inline-flex;
+
   align-items: center;
+  justify-content: center;
+
   gap: 8px;
 
   flex: 0 0 auto;
 
-  padding: 11px 17px;
+  min-height: 44px;
 
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding:
+    0
+    17px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.09);
+
   border-radius: 999px;
 
-  background: rgba(255, 255, 255, 0.025);
+  background:
+    rgba(255, 255, 255, 0.025);
 
-  color: #ddd;
+  color: #d0ccd4;
 
   font-size: 13px;
   font-weight: 600;
 
   transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    color 0.25s ease,
-    background 0.25s ease;
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease,
+    background 0.22s ease;
 }
 
 .textLink:hover {
   transform: translateY(-2px);
 
-  border-color: rgba(165, 107, 255, 0.42);
+  border-color:
+    rgba(158, 112, 247, 0.32);
 
-  background: rgba(128, 52, 243, 0.08);
+  background:
+    rgba(143, 92, 246, 0.075);
 
   color: white;
 }
 
 .magicIcon {
-  color: #a57cff;
+  flex: 0 0 auto;
 
-  font-size: 38px;
+  color: #a47af7;
+
+  font-size: 34px;
 
   filter:
     drop-shadow(
       0 0 15px
-      rgba(128, 52, 243, 0.5)
+      rgba(143, 92, 246, 0.32)
     );
 }
 
 .cta {
   position: relative;
 
-  margin-top: 90px;
+  margin-top:
+    clamp(70px, 8vw, 105px);
 
   overflow: hidden;
 
-  border: 1px solid rgba(165, 107, 255, 0.18);
-  border-radius: 28px;
+  border:
+    1px solid
+    rgba(158, 112, 247, 0.16);
+
+  border-radius: 26px;
 
   background:
     linear-gradient(
       135deg,
-      rgba(20, 14, 30, 0.96),
-      rgba(8, 8, 10, 0.97)
+      rgba(20, 16, 27, 0.98),
+      rgba(8, 8, 11, 0.99)
     );
 
   box-shadow:
-    0 30px 90px
-    rgba(0, 0, 0, 0.4);
+    0 28px 80px
+    rgba(0, 0, 0, 0.34);
 }
 
 .ctaGlow {
   position: absolute;
 
-  top: -200px;
-  right: -150px;
+  top: -220px;
+  right: -160px;
 
-  width: 450px;
-  height: 450px;
+  width: 480px;
+  height: 480px;
 
   border-radius: 50%;
 
-  background: rgba(128, 52, 243, 0.18);
+  background:
+    rgba(143, 92, 246, 0.15);
 
-  filter: blur(90px);
+  filter: blur(95px);
 
   pointer-events: none;
 }
@@ -224,40 +271,32 @@
 
   align-items: center;
 
-  gap: 28px;
+  gap:
+    clamp(22px, 4vw, 40px);
 
   padding:
-    clamp(
-      28px,
-      5vw,
-      55px
-    );
+    clamp(28px, 5vw, 54px);
 }
 
 .ctaIcon {
   display: grid;
   place-items: center;
 
-  width: 68px;
-  height: 68px;
+  width: 66px;
+  height: 66px;
 
-  border: 1px solid rgba(165, 107, 255, 0.3);
-  border-radius: 20px;
+  border:
+    1px solid
+    rgba(158, 112, 247, 0.23);
+
+  border-radius: 19px;
 
   background:
-    linear-gradient(
-      135deg,
-      rgba(128, 52, 243, 0.28),
-      rgba(80, 30, 145, 0.12)
-    );
+    rgba(143, 92, 246, 0.1);
 
   color: white;
 
-  font-size: 24px;
-
-  box-shadow:
-    0 0 35px
-    rgba(128, 52, 243, 0.18);
+  font-size: 22px;
 }
 
 .ctaContent h2 {
@@ -266,12 +305,14 @@
   color: white;
 
   font-size: clamp(
-    25px,
-    4vw,
+    26px,
+    3.5vw,
     42px
   );
 
-  letter-spacing: -0.03em;
+  line-height: 1.1;
+
+  letter-spacing: -0.04em;
 }
 
 .ctaContent p:not(.eyebrow) {
@@ -279,74 +320,77 @@
 
   margin-top: 10px;
 
-  color: #929099;
+  color: #93909a;
 
-  line-height: 1.7;
+  font-size: 14px;
+
+  line-height: 1.75;
 }
 
 .ctaButton {
-  display: flex;
+  display: inline-flex;
 
   align-items: center;
   justify-content: center;
 
   gap: 9px;
 
-  min-height: 50px;
+  min-height: 48px;
 
-  padding: 0 21px;
+  padding:
+    0
+    21px;
 
   border-radius: 999px;
 
   background:
     linear-gradient(
       135deg,
-      #8b54f7,
-      #6332c5
+      #925ff1,
+      #6d3ac8
     );
 
   color: white;
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 
+  white-space: nowrap;
+
   box-shadow:
-    0 12px 35px
-    rgba(128, 52, 243, 0.27);
+    0 12px 32px
+    rgba(128, 76, 225, 0.22);
 
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
 .ctaButton:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 
   box-shadow:
-    0 17px 45px
-    rgba(128, 52, 243, 0.4);
+    0 17px 40px
+    rgba(128, 76, 225, 0.32);
 }
 
 @media (max-width: 760px) {
   .intro,
-  .experienceSection,
-  .cta {
-    width: calc(100% - 24px);
-  }
-
-  .intro,
   .experienceSection {
-    margin-top: 50px;
+    margin-top: 52px;
   }
 
   .sectionHeading {
     align-items: flex-start;
     flex-direction: column;
-    gap: 18px;
+
+    gap: 17px;
   }
 
   .ctaContent {
     grid-template-columns: 1fr;
+
+    gap: 20px;
   }
 
   .ctaButton {
@@ -356,20 +400,34 @@
 
 @media (max-width: 480px) {
   .home {
-    padding-bottom: 45px;
+    padding-bottom: 52px;
+  }
+
+  .sectionHeading h2 {
+    font-size: clamp(
+      30px,
+      10vw,
+      42px
+    );
+  }
+
+  .cta {
+    border-radius: 20px;
   }
 
   .ctaContent {
-    padding: 24px 20px;
+    padding:
+      25px
+      21px;
   }
 
   .ctaIcon {
-    width: 55px;
-    height: 55px;
+    width: 54px;
+    height: 54px;
 
     border-radius: 15px;
 
-    font-size: 19px;
+    font-size: 18px;
   }
 
   .ctaButton {

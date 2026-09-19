@@ -1,19 +1,41 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-  --lm-bg: #000000;
-  --lm-surface: #121212;
-  --lm-surface-soft: #1a1a1a;
-  --lm-purple: #8034f3;
-  --lm-purple-light: #b2b2fe;
-  --lm-violet: #7d6fff;
-  --lm-gold: #ffb300;
-  --lm-text: #ffffff;
-  --lm-muted: #b9b7bb;
-  --lm-border: rgba(178, 178, 254, 0.18);
+  --lm-bg: #050506;
+  --lm-bg-deep: #020203;
 
-  --content-width: 1400px;
-  --page-padding: clamp(16px, 4vw, 56px);
+  --lm-surface: #0d0d10;
+  --lm-surface-2: #121217;
+  --lm-surface-3: #18181e;
+
+  --lm-text: #f7f5fa;
+  --lm-text-soft: #d2ced7;
+  --lm-muted: #8d8994;
+
+  --lm-purple: #8f5cf6;
+  --lm-purple-hover: #a273ff;
+  --lm-purple-soft: rgba(143, 92, 246, 0.1);
+
+  --lm-gold: #eac56c;
+
+  --lm-border: rgba(255, 255, 255, 0.075);
+  --lm-border-strong: rgba(160, 113, 255, 0.22);
+
+  --content-width: 1360px;
+  --page-gutter: clamp(18px, 3.2vw, 44px);
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
+  --shadow-card:
+    0 18px 50px
+    rgba(0, 0, 0, 0.28);
+
+  --shadow-elevated:
+    0 28px 90px
+    rgba(0, 0, 0, 0.4);
 }
 
 *,
@@ -25,48 +47,60 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  background: var(--lm-bg);
+  background: var(--lm-bg-deep);
   color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
+
+  overflow-x: hidden;
+
   background:
     radial-gradient(
-      circle at 50% -20%,
-      rgba(86, 45, 160, 0.14),
-      transparent 35%
+      circle at 50% -15%,
+      rgba(103, 58, 183, 0.13),
+      transparent 34%
     ),
-    #000;
+    linear-gradient(
+      180deg,
+      #050506 0%,
+      #020203 100%
+    );
+
   color: var(--lm-text);
+
   font-family:
-    Inter,
+    "Inter",
     Arial,
     Helvetica,
     sans-serif;
-  overflow-x: hidden;
+
+  font-size: 16px;
+  line-height: 1.5;
+
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 body::-webkit-scrollbar {
-  width: 6px;
+  width: 7px;
 }
 
 body::-webkit-scrollbar-track {
-  background: #050505;
+  background: #050506;
 }
 
 body::-webkit-scrollbar-thumb {
-  background: #6200ff;
   border-radius: 999px;
+  background: #6739c5;
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background: #7300ff;
+  background: #8554e8;
 }
 
 button,
@@ -76,13 +110,17 @@ select {
   font: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 button,
 a {
   -webkit-tap-highlight-color: transparent;
-}
-
-button {
-  cursor: pointer;
 }
 
 a {
@@ -108,12 +146,12 @@ ol {
 }
 
 ::selection {
-  background: rgba(128, 52, 243, 0.65);
-  color: white;
+  background: rgba(143, 92, 246, 0.68);
+  color: #fff;
 }
 
 :focus-visible {
-  outline: 2px solid #a56bff;
+  outline: 2px solid #aa7cff;
   outline-offset: 3px;
 }
 
@@ -124,9 +162,9 @@ ol {
 }
 
 .page-content {
-  flex: 1;
-  min-width: 0;
   width: 100%;
+  min-width: 0;
+  flex: 1;
 }
 
 .route-transition {
@@ -136,9 +174,10 @@ ol {
 
 .site-container {
   width: min(
-    calc(100% - (var(--page-padding) * 2)),
+    calc(100% - (var(--page-gutter) * 2)),
     var(--content-width)
   );
+
   margin-inline: auto;
 }
 
@@ -157,24 +196,25 @@ ol {
   background:
     radial-gradient(
       circle at center,
-      rgba(84, 18, 145, 0.2),
+      rgba(113, 62, 207, 0.18),
       transparent 38%
     ),
-    #000;
+    #020203;
 }
 
 .loading-text {
   position: relative;
   z-index: 2;
 
+  color: white;
+
   font-size: clamp(
-    32px,
+    30px,
     7vw,
     58px
   );
 
   font-weight: 700;
-  color: white;
 
   letter-spacing: clamp(
     3px,
@@ -183,9 +223,8 @@ ol {
   );
 
   text-shadow:
-    0 0 15px #ff00ff,
-    0 0 30px #7300e6,
-    0 0 50px #ff00ff;
+    0 0 22px
+    rgba(143, 92, 246, 0.65);
 
   animation:
     lumireelGlow
@@ -198,11 +237,7 @@ ol {
 .loading-glow {
   position: absolute;
 
-  width: min(
-    420px,
-    80vw
-  );
-
+  width: min(420px, 80vw);
   aspect-ratio: 1;
 
   border-radius: 50%;
@@ -210,12 +245,11 @@ ol {
   background:
     radial-gradient(
       circle,
-      rgba(255, 0, 255, 0.24),
-      rgba(115, 0, 230, 0.08) 45%,
-      transparent 72%
+      rgba(143, 92, 246, 0.22),
+      transparent 70%
     );
 
-  filter: blur(40px);
+  filter: blur(45px);
 
   animation:
     glowPulse
@@ -227,23 +261,23 @@ ol {
 
 .loading-rings {
   position: absolute;
-  bottom: 15%;
+  bottom: 16%;
 
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .loading-rings span {
-  width: 11px;
-  height: 11px;
+  width: 9px;
+  height: 9px;
 
   border-radius: 50%;
 
-  background: #ff00ff;
+  background: #9562f6;
 
   box-shadow:
-    0 0 10px #ff00ff,
-    0 0 20px #ff00ff;
+    0 0 14px
+    rgba(149, 98, 246, 0.8);
 
   animation:
     loadingBounce
@@ -274,12 +308,12 @@ ol {
 
 @keyframes glowPulse {
   from {
-    transform: scale(0.85);
+    transform: scale(0.88);
     opacity: 0.6;
   }
 
   to {
-    transform: scale(1.15);
+    transform: scale(1.12);
     opacity: 1;
   }
 }
@@ -288,22 +322,18 @@ ol {
   0%,
   100% {
     transform: translateY(0);
-    opacity: 0.55;
+    opacity: 0.5;
   }
 
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-9px);
     opacity: 1;
   }
 }
 
 @media (max-width: 768px) {
   :root {
-    --page-padding: 16px;
-  }
-
-  .page-content {
-    overflow: hidden;
+    --page-gutter: 18px;
   }
 
   input,
@@ -313,16 +343,13 @@ ol {
   }
 }
 
-@media (max-width: 480px) {
-  .loading-rings {
-    bottom: 20%;
+@media (max-width: 390px) {
+  :root {
+    --page-gutter: 16px;
   }
 }
 
-@media (
-  prefers-reduced-motion:
-  reduce
-) {
+@media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
@@ -335,9 +362,4 @@ ol {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-.nextjs-toast-errors-parent {
-  display: none !important;
-  opacity: 0 !important;
 }
