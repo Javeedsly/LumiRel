@@ -5,10 +5,22 @@ import {
   useState,
 } from "react";
 
+import Link from "next/link";
+
+import {
+  motion,
+} from "framer-motion";
+
+import {
+  FaArrowRight,
+  FaPlay,
+  FaStar,
+} from "react-icons/fa";
+
 import {
   useGlobalState,
-  useOptimizedMemo,
   useOptimizedCallback,
+  useOptimizedMemo,
 } from "@/app/hooks";
 
 import type {
@@ -33,6 +45,7 @@ const Slider = () => {
 
   const {
     films: data,
+    filmsLoading,
     error,
     dispatch,
     getFilms,
@@ -56,81 +69,89 @@ const Slider = () => {
     useOptimizedMemo<
       Film[]
     >(() => {
-      const filtered =
-        data.filter(
-          (film) =>
-            film.popular &&
+      const preferred =
+        data
+          .filter(
+            (film) =>
+              film.popular &&
+              Number(
+                film.year
+              ) >= 2020
+          )
+          .sort(
+            (a, b) =>
+              Number(
+                b.imdb
+              ) -
+              Number(
+                a.imdb
+              )
+          );
+
+      const fallback =
+        [...data].sort(
+          (a, b) =>
             Number(
-              film.year
-            ) >= 2022 &&
+              b.imdb
+            ) -
             Number(
-              film.imdb
-            ) >= 7.5
+              a.imdb
+            )
         );
 
-      const uniqueGenres =
-        new Set<string>();
+      const combined = [
+        ...preferred,
+        ...fallback,
+      ];
 
-      const uniqueFilms:
+      const unique:
         Film[] = [];
+
+      const ids =
+        new Set<string>();
 
       for (
         const film of
-        filtered
+        combined
       ) {
-        const genre =
-          film.category?.[
-            0
-          ];
-
         if (
-          !genre ||
-          uniqueGenres.has(
-            genre
+          ids.has(
+            String(
+              film.id
+            )
           )
         ) {
           continue;
         }
 
-        uniqueGenres.add(
-          genre
+        ids.add(
+          String(
+            film.id
+          )
         );
 
-        uniqueFilms.push(
+        unique.push(
           film
         );
 
         if (
-          uniqueFilms.length >=
+          unique.length ===
           4
         ) {
           break;
         }
       }
 
-      return uniqueFilms;
+      return unique;
     }, [data]);
 
   useEffect(() => {
     if (
-      displayedSlides.length ===
-      0
+      displayedSlides.length <=
+      1
     ) {
-      setCurrentSlide(
-        0
-      );
-
       return;
     }
-
-    setCurrentSlide(
-      (previous) =>
-        Math.min(
-          previous,
-          displayedSlides.length -
-            1
-        )
-    );
 
     const interval =
       window.setInterval(
@@ -142,14 +163,31 @@ const Slider = () => {
               displayedSlides.length
           );
         },
-        10000
+        9000
       );
 
-    return () =>
+    return () => {
       window.clearInterval(
         interval
       );
-  }, [displayedSlides]);
+    };
+  }, [
+    displayedSlides.length,
+  ]);
+
+  useEffect(() => {
+    if (
+      currentSlide >=
+      displayedSlides.length
+    ) {
+      setCurrentSlide(
+        0
+      );
+    }
+  }, [
+    currentSlide,
+    displayedSlides.length,
+  ]);
 
   const handleThumbnailClick =
     useOptimizedCallback(
@@ -163,85 +201,206 @@ const Slider = () => {
       []
     );
 
-  if (error) {
+  if (
+    filmsLoading &&
+    displayedSlides.length ===
+      0
+  ) {
     return (
-      <p>
-        Xəta baş verdi:{" "}
-        {error}
-      </p>
+      <div className="slider slider--loading">
+        <div className="hero-skeleton" />
+      </div>
     );
   }
 
+  if (error) {
+    return (
+      <div className="slider-error">
+        Filmlər yüklənə
+        bilmədi.
+      </div>
+    );
+  }
+
+  if (
+    displayedSlides.length ===
+    0
+  ) {
+    return null;
+  }
+
   return (
-    <div className="slider">
-      <div className="container">
-        {displayedSlides.map(
-          (
-            item,
-            index
-          ) => (
-            <div
-              key={
-                item.id
-              }
-              className={`slide ${
+    <section className="slider">
+      <div className="hero-frame">
+        <div className="hero-noise" />
+
+        <div className="container">
+          {displayedSlides.map(
+            (
+              item,
+              index
+            ) => {
+              const isActive =
                 currentSlide ===
-                index
-                  ? "active"
-                  : ""
-              }`}
-              style={{
-                transform: `translateX(${
-                  -currentSlide *
-                  100
-                }%)`,
-              }}
-            >
-              <div className="content">
-                <h2>
-                  {
-                    item.title
+                index;
+
+              return (
+                <article
+                  key={
+                    item.id
                   }
-                </h2>
-
-                <p>
-                  {item.category.join(
-                    ", "
-                  )}
-                </p>
-              </div>
-
-              {item.poster && (
-                <div
-                  className="image"
+                  className={`slide ${
+                    isActive
+                      ? "active"
+                      : ""
+                  }`}
                   style={{
-                    backgroundImage: `url(${item.poster})`,
-                    backgroundSize:
-                      "cover",
-                    backgroundPosition:
-                      "center center",
-                    borderRadius:
-                      "10px",
-                    width:
-                      "100%",
-                    height:
-                      "100%",
-                    position:
-                      "absolute",
-                    zIndex:
-                      -1,
-                    backgroundBlendMode:
-                      "overlay",
-                    opacity:
-                      0.7,
-                    transition:
-                      "opacity 1.5s ease-in-out",
+                    transform: `translateX(${
+                      -currentSlide *
+                      100
+                    }%)`,
                   }}
-                />
-              )}
-            </div>
-          )
-        )}
+                >
+                  <div
+                    className="image"
+                    style={{
+                      backgroundImage:
+                        `url(${item.poster})`,
+                    }}
+                  />
+
+                  <div className="hero-vignette" />
+
+                  <motion.div
+                    className="content"
+                    animate={{
+                      opacity:
+                        isActive
+                          ? 1
+                          : 0.35,
+
+                      y:
+                        isActive
+                          ? 0
+                          : 12,
+                    }}
+                    transition={{
+                      duration:
+                        0.6,
+                    }}
+                  >
+                    <div className="hero-kicker">
+                      <span className="hero-dot" />
+
+                      LumiReel
+                      Featured
+                    </div>
+
+                    <h1>
+                      {
+                        item.title
+                      }
+                    </h1>
+
+                    <div className="hero-meta">
+                      <span className="hero-rating">
+                        <FaStar />
+
+                        {item.imdb ||
+                          "N/A"}
+                      </span>
+
+                      <span>
+                        {
+                          item.year
+                        }
+                      </span>
+
+                      {item.duration && (
+                        <span>
+                          {
+                            item.duration
+                          }
+                        </span>
+                      )}
+
+                      {item.language && (
+                        <span>
+                          {
+                            item.language
+                          }
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="hero-genres">
+                      {(
+                        item.category ??
+                        []
+                      )
+                        .slice(
+                          0,
+                          3
+                        )
+                        .map(
+                          (
+                            category
+                          ) => (
+                            <span
+                              key={
+                                category
+                              }
+                            >
+                              {
+                                category
+                              }
+                            </span>
+                          )
+                        )}
+                    </div>
+
+                    {item.summary && (
+                      <p className="hero-summary">
+                        {item.summary.length >
+                        190
+                          ? `${item.summary.slice(
+                              0,
+                              190
+                            )}...`
+                          : item.summary}
+                      </p>
+                    )}
+
+                    <div className="hero-actions">
+                      <button
+                        type="button"
+                        className="hero-primary"
+                        onClick={() =>
+                          goToDetail(
+                            item.id
+                          )
+                        }
+                      >
+                        <FaPlay />
+
+                        Watch Now
+                      </button>
+
+                      <Link
+                        href="/main/allfilms"
+                        className="hero-secondary"
+                      >
+                        Browse Movies
+
+                        <FaArrowRight />
+                      </Link>
+                    </div>
+                  </motion.div>
+                </article>
+              );
+            }
+          )}
+        </div>
       </div>
 
       <div className="thumbnails">
@@ -250,7 +409,8 @@ const Slider = () => {
             item,
             index
           ) => (
-            <div
+            <button
+              type="button"
               key={`thumbnail-${item.id}`}
               className={`thumbnail ${
                 index ===
@@ -266,37 +426,32 @@ const Slider = () => {
             >
               <div className="thumbnail-bg" />
 
-              {item.poster && (
-                <img
-                  src={
-                    item.poster
-                  }
-                  alt={
+              <img
+                src={
+                  item.poster
+                }
+                alt=""
+              />
+
+              <div className="thumbnail-copy">
+                <span>
+                  {
                     item.title
                   }
-                />
-              )}
+                </span>
 
-              <h3
-                onClick={(
-                  event
-                ) => {
-                  event.stopPropagation();
-
-                  goToDetail(
-                    item.id
-                  );
-                }}
-              >
-                {
-                  item.title
-                }
-              </h3>
-            </div>
+                <small>
+                  IMDb{" "}
+                  {
+                    item.imdb
+                  }
+                </small>
+              </div>
+            </button>
           )
         )}
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -7,34 +7,43 @@ import {
   useState,
 } from "react";
 
+import Link from "next/link";
+
+import {
+  useRouter,
+  useParams,
+} from "next/navigation";
+
+import {
+  motion,
+} from "framer-motion";
+
 import {
   useDispatch,
   useSelector,
 } from "react-redux";
 
 import {
-  useParams,
-} from "next/navigation";
-
-import {
-  FaFire,
-} from "react-icons/fa";
-
-import {
   AiOutlineClose,
 } from "react-icons/ai";
 
 import {
-  RiSendPlaneLine,
-} from "react-icons/ri";
+  FaFire,
+  FaPlay,
+  FaStar,
+} from "react-icons/fa";
 
 import {
   GrFormClose,
 } from "react-icons/gr";
 
+import {
+  RiSendPlaneLine,
+} from "react-icons/ri";
+
 import type {
-  RootState,
   AppDispatch,
+  RootState,
 } from "@/app/redux/store/store";
 
 import {
@@ -47,16 +56,12 @@ import type {
   CommentReply,
 } from "@/app/redux/features/apiSlice/apiSlice";
 
-import ProtectedRoute from "@/app/Components/ProtectedRoute/ProtectedRoute";
-
 import "./detail.css";
 
 interface DetailReply
   extends CommentReply {
   userProfileImage?: string;
-
   isSpoiler?: boolean;
-
   showSpoiler?: boolean;
 }
 
@@ -66,112 +71,114 @@ interface DetailComment
     "replies"
   > {
   userProfileImage?: string;
-
   isSpoiler?: boolean;
-
   showSpoiler?: boolean;
-
   replies?: DetailReply[];
 }
 
 const DEFAULT_AVATAR =
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBGcM6Pr04EvVjbkfVmNnXQoFHU_Y3NxbaNQ&s";
+  "https://i.pinimg.com/736x/20/e8/36/20e836d27bea68d015f0da6694151466.jpg";
 
 const normalizeComments = (
   source:
     | FilmComment[]
     | undefined
-): DetailComment[] => {
-  return (
-    source ?? []
+): DetailComment[] =>
+  (
+    source ??
+    []
   ).map(
-    (comment) => {
-      const detailComment =
-        comment as DetailComment;
+    (
+      comment
+    ) => ({
+      ...comment,
 
-      return {
-        ...detailComment,
+      isSpoiler:
+        (
+          comment as
+            DetailComment
+        ).isSpoiler ??
+        false,
 
-        isSpoiler:
-          detailComment.isSpoiler ??
-          false,
+      showSpoiler:
+        (
+          comment as
+            DetailComment
+        ).showSpoiler ??
+        false,
 
-        showSpoiler:
-          detailComment.showSpoiler ??
-          false,
-
-        replies:
+      replies:
+        (
+          comment.replies ??
+          []
+        ).map(
           (
-            detailComment.replies ??
-            []
-          ).map(
-            (reply) => ({
-              ...reply,
+            reply
+          ) => ({
+            ...reply,
 
-              isSpoiler:
-                reply.isSpoiler ??
-                false,
+            isSpoiler:
+              (
+                reply as
+                  DetailReply
+              )
+                .isSpoiler ??
+              false,
 
-              showSpoiler:
-                reply.showSpoiler ??
-                false,
-            })
-          ),
-      };
-    }
+            showSpoiler:
+              (
+                reply as
+                  DetailReply
+              )
+                .showSpoiler ??
+              false,
+          })
+        ),
+    })
   );
-};
-
-const getNumericUserId = (
-  value:
-    | string
-    | number
-    | undefined
-): number | null => {
-  if (
-    value === undefined
-  ) {
-    return null;
-  }
-
-  const parsed =
-    Number(value);
-
-  return Number.isFinite(
-    parsed
-  )
-    ? parsed
-    : null;
-};
 
 const Detail = () => {
   const dispatch =
     useDispatch<AppDispatch>();
 
+  const router =
+    useRouter();
+
+  const params =
+    useParams();
+
   const {
     data,
     error,
     loading,
-  } = useSelector(
-    (state: RootState) =>
-      state.films
-  );
+  } =
+    useSelector(
+      (
+        state:
+          RootState
+      ) =>
+        state.films
+    );
 
   const user =
     useSelector(
-      (state: RootState) =>
-        state.auth.user
+      (
+        state:
+          RootState
+      ) =>
+        state.auth
+          .user
     );
-
-  const params =
-    useParams();
 
   const rawId =
     params?.id;
 
   const id =
-    Array.isArray(rawId)
-      ? rawId[0] ?? ""
+    Array.isArray(
+      rawId
+    )
+      ? rawId[0] ??
+        ""
       : typeof rawId ===
           "string"
         ? rawId
@@ -181,10 +188,15 @@ const Detail = () => {
     useMemo(
       () =>
         data.find(
-          (item) =>
+          (
+            item
+          ) =>
             String(
               item.id
-            ) === id
+            ) ===
+            String(
+              id
+            )
         ),
       [
         data,
@@ -193,9 +205,18 @@ const Detail = () => {
     );
 
   const [
+    comments,
+    setComments,
+  ] =
+    useState<
+      DetailComment[]
+    >([]);
+
+  const [
     newComment,
     setNewComment,
-  ] = useState("");
+  ] =
+    useState("");
 
   const [
     replyingTo,
@@ -208,54 +229,25 @@ const Detail = () => {
   const [
     newReply,
     setNewReply,
-  ] = useState("");
-
-  const [
-    isSpoiler,
-    setIsSpoiler,
-  ] = useState(false);
-
-  const [
-    comments,
-    setComments,
   ] =
-    useState<
-      DetailComment[]
-    >([]);
+    useState("");
 
-  const loggedInUserId =
-    getNumericUserId(
-      user?.id
-    );
+  const [
+    commentSpoiler,
+    setCommentSpoiler,
+  ] =
+    useState(false);
 
-  const currentUserId =
-    loggedInUserId ??
-    99;
-
-  const currentUserName =
-    user
-      ? [
-          user.name,
-          user.surname,
-        ]
-          .filter(
-            Boolean
-          )
-          .join(" ")
-          .trim() ||
-        user.username ||
-        "İstifadəçi"
-      : "İstifadəçi";
-
-  const currentUserImage =
-    user?.profileImage ||
-    "/default-avatar.jpg";
-
- 
+  const [
+    replySpoiler,
+    setReplySpoiler,
+  ] =
+    useState(false);
 
   useEffect(() => {
     if (
-      data.length === 0
+      data.length ===
+      0
     ) {
       dispatch(
         getFilms()
@@ -276,32 +268,70 @@ const Detail = () => {
     }
   }, [film]);
 
+  const userId =
+    user
+      ? Number(
+          user.id
+        )
+      : null;
+
+  const validUserId =
+    userId !==
+      null &&
+    Number.isFinite(
+      userId
+    )
+      ? userId
+      : null;
+
+  const userName =
+    user
+      ? [
+          user.name,
+          user.surname,
+        ]
+          .filter(
+            Boolean
+          )
+          .join(" ")
+          .trim() ||
+        user.username ||
+        "LumiReel User"
+      : "";
+
+  const userImage =
+    user?.profileImage ||
+    DEFAULT_AVATAR;
+
+  const requireLogin =
+    () => {
+      router.push(
+        "/main/auth/login"
+      );
+    };
+
   const formatDate = (
-    timestamp:
-      | number
-      | string
-      | undefined
-  ): string => {
-    if (
-      timestamp ===
-        undefined ||
-      timestamp === ""
-    ) {
-      return "Tarix yoxdur";
+    timestamp?:
+      string
+  ) => {
+    if (!timestamp) {
+      return "";
     }
 
-    const numericTimestamp =
-      Number(timestamp);
+    const parsed =
+      Number(
+        timestamp
+      );
 
     const date =
       Number.isNaN(
-        numericTimestamp
+        parsed
       )
         ? new Date(
             timestamp
           )
         : new Date(
-            numericTimestamp
+            parsed
           );
 
     if (
@@ -309,39 +339,28 @@ const Detail = () => {
         date.getTime()
       )
     ) {
-      return "Tarix yoxdur";
+      return "";
     }
 
-    const day =
-      date
-        .getDate()
-        .toString()
-        .padStart(
-          2,
-          "0"
-        );
+    return date.toLocaleDateString(
+      "az-AZ",
+      {
+        day:
+          "2-digit",
 
-    const month =
-      (
-        date.getMonth() +
-        1
-      )
-        .toString()
-        .padStart(
-          2,
-          "0"
-        );
+        month:
+          "2-digit",
 
-    const year =
-      date.getFullYear();
-
-    return `${day}.${month}.${year}`;
+        year:
+          "numeric",
+      }
+    );
   };
 
   const saveComments =
     useCallback(
       async (
-        updatedComments:
+        nextComments:
           DetailComment[]
       ) => {
         if (!film) {
@@ -350,11 +369,12 @@ const Detail = () => {
 
         await dispatch(
           updateFilm({
-            id: film.id,
+            id:
+              film.id,
 
             data: {
               comments:
-                updatedComments,
+                nextComments,
             },
           })
         ).unwrap();
@@ -367,93 +387,118 @@ const Detail = () => {
 
   const handleAddComment =
     async () => {
+      if (!user) {
+        requireLogin();
+        return;
+      }
+
       if (
         !film ||
-        !newComment.trim()
+        !newComment.trim() ||
+        validUserId ===
+          null
       ) {
         return;
       }
 
-      const newEntry:
-        DetailComment = {
-        id:
-          Date.now(),
+      const previous =
+        comments;
 
-        user_id:
-          currentUserId,
+      const entry:
+        DetailComment =
+        {
+          id:
+            Date.now(),
 
-        username:
-          currentUserName,
+          user_id:
+            validUserId,
 
-        userProfileImage:
-          currentUserImage,
+          username:
+            userName,
 
-        comment:
-          newComment.trim(),
+          userProfileImage:
+            userImage,
 
-        flames:
-          0,
+          comment:
+            newComment.trim(),
 
-        users_who_liked:
-          [],
+          flames: 0,
 
-        replies:
-          [],
+          users_who_liked:
+            [],
 
-        timestamp:
-          Date.now().toString(),
+          replies: [],
 
-        isSpoiler,
+          timestamp:
+            Date.now().toString(),
 
-        showSpoiler:
-          false,
-      };
+          isSpoiler:
+            commentSpoiler,
 
-      const updatedComments =
-        [
-          ...comments,
-          newEntry,
-        ];
+          showSpoiler:
+            false,
+        };
+
+      const next = [
+        ...comments,
+        entry,
+      ];
 
       setComments(
-        updatedComments
+        next
+      );
+
+      setNewComment(
+        ""
+      );
+
+      setCommentSpoiler(
+        false
       );
 
       try {
         await saveComments(
-          updatedComments
+          next
         );
-
-        setNewComment(
-          ""
-        );
-
-        setIsSpoiler(
-          false
-        );
-      } catch (saveError) {
+      } catch (
+        saveError
+      ) {
         console.error(
           "Comment save error:",
           saveError
         );
 
         setComments(
-          comments
+          previous
         );
       }
     };
 
   const handleLike =
     async (
-      commentId: number
+      commentId:
+        number
     ) => {
-      if (!film) {
+      if (!user) {
+        requireLogin();
         return;
       }
 
-      const updatedComments =
+      if (
+        validUserId ===
+        null
+      ) {
+        return;
+      }
+
+      const previous =
+        comments;
+
+      const next =
         comments.map(
-          (comment) => {
+          (
+            comment
+          ) => {
             if (
               comment.id !==
               commentId
@@ -461,20 +506,20 @@ const Detail = () => {
               return comment;
             }
 
-            const likedUsers =
+            const liked =
               comment.users_who_liked ??
               [];
 
-            const alreadyLiked =
-              likedUsers.includes(
-                currentUserId
+            const exists =
+              liked.includes(
+                validUserId
               );
 
             return {
               ...comment,
 
               flames:
-                alreadyLiked
+                exists
                   ? Math.max(
                       0,
                       comment.flames -
@@ -484,251 +529,299 @@ const Detail = () => {
                     1,
 
               users_who_liked:
-                alreadyLiked
-                  ? likedUsers.filter(
+                exists
+                  ? liked.filter(
                       (
-                        userId
+                        id
                       ) =>
-                        userId !==
-                        currentUserId
+                        id !==
+                        validUserId
                     )
                   : [
-                      ...likedUsers,
-                      currentUserId,
+                      ...liked,
+                      validUserId,
                     ],
             };
           }
         );
 
       setComments(
-        updatedComments
+        next
       );
 
       try {
         await saveComments(
-          updatedComments
+          next
         );
-      } catch (saveError) {
+      } catch (
+        saveError
+      ) {
         console.error(
-          "Like update error:",
+          "Like error:",
           saveError
         );
 
         setComments(
-          comments
+          previous
         );
       }
     };
 
   const handleDeleteComment =
     async (
-      commentId: number,
-      commentUserId: number
+      commentId:
+        number
     ) => {
       if (
-        !film ||
-        loggedInUserId ===
-          null ||
-        loggedInUserId !==
-          commentUserId
+        validUserId ===
+        null
       ) {
         return;
       }
 
-      const updatedComments =
+      const target =
+        comments.find(
+          (
+            comment
+          ) =>
+            comment.id ===
+            commentId
+        );
+
+      if (
+        !target ||
+        target.user_id !==
+          validUserId
+      ) {
+        return;
+      }
+
+      const previous =
+        comments;
+
+      const next =
         comments.filter(
-          (comment) =>
+          (
+            comment
+          ) =>
             comment.id !==
             commentId
         );
 
       setComments(
-        updatedComments
+        next
       );
 
       try {
         await saveComments(
-          updatedComments
+          next
         );
-      } catch (saveError) {
-        console.error(
-          "Comment delete error:",
-          saveError
-        );
-
+      } catch {
         setComments(
-          comments
+          previous
         );
       }
     };
 
   const handleReply =
     async (
-      commentId: number,
-      replyText: string,
-      replyIsSpoiler: boolean
+      commentId:
+        number
     ) => {
+      if (!user) {
+        requireLogin();
+        return;
+      }
+
       if (
-        !film ||
-        !replyText.trim()
+        validUserId ===
+          null ||
+        !newReply.trim()
       ) {
         return;
       }
 
-      const newReplyEntry:
-        DetailReply = {
-        id:
-          Date.now(),
+      const previous =
+        comments;
 
-        user_id:
-          currentUserId,
+      const reply:
+        DetailReply =
+        {
+          id:
+            Date.now(),
 
-        username:
-          currentUserName,
+          user_id:
+            validUserId,
 
-        userProfileImage:
-          currentUserImage,
+          username:
+            userName,
 
-        comment:
-          replyText.trim(),
+          userProfileImage:
+            userImage,
 
-        timestamp:
-          Date.now().toString(),
+          comment:
+            newReply.trim(),
 
-        isSpoiler:
-          replyIsSpoiler,
+          timestamp:
+            Date.now().toString(),
 
-        showSpoiler:
-          false,
-      };
+          isSpoiler:
+            replySpoiler,
 
-      const updatedComments =
+          showSpoiler:
+            false,
+        };
+
+      const next =
         comments.map(
-          (comment) =>
+          (
+            comment
+          ) =>
             comment.id ===
             commentId
               ? {
                   ...comment,
 
-                  replies:
-                    [
-                      ...(
-                        comment.replies ??
-                        []
-                      ),
+                  replies: [
+                    ...(
+                      comment.replies ??
+                      []
+                    ),
 
-                      newReplyEntry,
-                    ],
+                    reply,
+                  ],
                 }
               : comment
         );
 
       setComments(
-        updatedComments
+        next
+      );
+
+      setNewReply(
+        ""
+      );
+
+      setReplySpoiler(
+        false
+      );
+
+      setReplyingTo(
+        null
       );
 
       try {
         await saveComments(
-          updatedComments
+          next
         );
-
-        setNewReply(
-          ""
-        );
-
-        setReplyingTo(
-          null
-        );
-
-        setIsSpoiler(
-          false
-        );
-      } catch (saveError) {
-        console.error(
-          "Reply save error:",
-          saveError
-        );
-
+      } catch {
         setComments(
-          comments
+          previous
         );
       }
     };
 
   const handleDeleteReply =
     async (
-      commentId: number,
-      replyId: number,
-      replyUserId: number
+      commentId:
+        number,
+
+      replyId:
+        number
     ) => {
       if (
-        !film ||
-        loggedInUserId ===
-          null ||
-        loggedInUserId !==
-          replyUserId
+        validUserId ===
+        null
       ) {
         return;
       }
 
-      const updatedComments =
+      const comment =
+        comments.find(
+          (
+            item
+          ) =>
+            item.id ===
+            commentId
+        );
+
+      const reply =
+        comment?.replies?.find(
+          (
+            item
+          ) =>
+            item.id ===
+            replyId
+        );
+
+      if (
+        !reply ||
+        reply.user_id !==
+          validUserId
+      ) {
+        return;
+      }
+
+      const previous =
+        comments;
+
+      const next =
         comments.map(
-          (comment) =>
-            comment.id ===
+          (
+            item
+          ) =>
+            item.id ===
             commentId
               ? {
-                  ...comment,
+                  ...item,
 
                   replies:
                     (
-                      comment.replies ??
+                      item.replies ??
                       []
                     ).filter(
                       (
-                        reply
+                        currentReply
                       ) =>
-                        reply.id !==
+                        currentReply.id !==
                         replyId
                     ),
                 }
-              : comment
+              : item
         );
 
       setComments(
-        updatedComments
+        next
       );
 
       try {
         await saveComments(
-          updatedComments
+          next
         );
-      } catch (saveError) {
-        console.error(
-          "Reply delete error:",
-          saveError
-        );
-
+      } catch {
         setComments(
-          comments
+          previous
         );
       }
     };
 
   const showCommentSpoiler =
     (
-      commentId: number
+      commentId:
+        number
     ) => {
       setComments(
         (
-          previousComments
+          previous
         ) =>
-          previousComments.map(
-            (comment) =>
+          previous.map(
+            (
+              comment
+            ) =>
               comment.id ===
               commentId
                 ? {
                     ...comment,
-
                     showSpoiler:
                       true,
                   }
@@ -739,15 +832,20 @@ const Detail = () => {
 
   const toggleReplySpoiler =
     (
-      commentId: number,
-      replyId: number
+      commentId:
+        number,
+
+      replyId:
+        number
     ) => {
       setComments(
         (
-          previousComments
+          previous
         ) =>
-          previousComments.map(
-            (comment) =>
+          previous.map(
+            (
+              comment
+            ) =>
               comment.id ===
               commentId
                 ? {
@@ -782,178 +880,304 @@ const Detail = () => {
     !film
   ) {
     return (
-      <div className="not-found">
-        Yüklənir...
+      <div className="detail-state">
+        Loading movie...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="error">
-        Xəta: {error}
+      <div className="detail-state detail-state--error">
+        {error}
       </div>
     );
   }
 
   if (!film) {
     return (
-      <div className="not-found">
+      <div className="detail-state">
         Film tapılmadı.
       </div>
     );
   }
 
   return (
-    <ProtectedRoute>
-      <main className="detailBack">
-        <section>
-          <div className="fragAbout">
-            <div className="fragTitle">
-              <div className="titleF">
-                <h2>
-                  {film.title}
-                </h2>
-              </div>
+    <main className="detailBack">
+      <motion.section
+        className="movie-hero"
+        initial={{
+          opacity: 0,
+          y: 25,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration:
+            0.6,
+        }}
+      >
+        <div
+          className="movie-hero-bg"
+          style={{
+            backgroundImage:
+              `url(${film.poster})`,
+          }}
+        />
 
-              <div className="imdb">
-                <span>
-                  IMDB{" "}
-                  <em>
-                    {film.imdb ||
-                      "N/A"}
-                  </em>
-                </span>
-              </div>
-            </div>
+        <div className="movie-hero-overlay" />
 
-            <div className="trailer">
-              <div className="fragman">
-                <iframe
-                  width="530"
-                  height="600"
-                  src={
-                    film.trailer
-                  }
-                  title={`${film.title} trailer`}
-                  frameBorder="0"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                />
-              </div>
-
-              <div className="about-film">
-                <p>
-                  {film.summary ||
-                    "Məlumat yoxdur"}
-                </p>
-
-                <div className="about-film-info">
-                  <p>
-                    <span>
-                      Director:
-                    </span>{" "}
-                    {film.director ||
-                      "Bilinmir"}
-                  </p>
-
-                  <p>
-                    <span>
-                      Release Date:
-                    </span>{" "}
-                    {film.year ||
-                      "Bilinmir"}
-                  </p>
-
-                  <p>
-                    <span>
-                      Duration:
-                    </span>{" "}
-                    {film.duration ||
-                      "Bilinmir"}
-                  </p>
-
-                  <p>
-                    <span>
-                      Category:
-                    </span>{" "}
-                    {film.category
-                      ?.join(", ") ||
-                      "Bilinmir"}
-                  </p>
-
-                  <p>
-                    <span>
-                      Country:
-                    </span>{" "}
-                    {film.country ||
-                      "Bilinmir"}
-                  </p>
-
-                  <p>
-                    <span>
-                      Main Actors:
-                    </span>{" "}
-                    {film.actors
-                      ?.map(
-                        (
-                          actor
-                        ) =>
-                          actor.name
-                      )
-                      .join(", ") ||
-                      "Bilinmir"}
-                  </p>
-
-                  <p>
-                    <span>
-                      Production Company:
-                    </span>{" "}
-                    {film.production_company ||
-                      "Bilinmir"}
-                  </p>
-
-                  <p>
-                    <span>
-                      IMDb Rating:
-                    </span>{" "}
-                    {film.imdb ||
-                      "N/A"}
-                  </p>
-                </div>
-              </div>
-            </div>
+        <div className="movie-hero-content">
+          <div className="movie-poster-wrap">
+            <img
+              src={
+                film.poster
+              }
+              alt={
+                film.title
+              }
+              className="movie-poster"
+            />
           </div>
-        </section>
 
-        <section>
-          <div className="fullmovie">
-           <div className="fullTop">
-              <iframe
-                width="100%"
-                height="100%"
-                src={
-                  film.full_movie_link
+          <div className="movie-copy">
+            <div className="movie-kicker">
+              <FaPlay />
+
+              Now on
+              LumiReel
+            </div>
+
+            <h1>
+              {
+                film.title
+              }
+            </h1>
+
+            <div className="movie-meta">
+              <span className="movie-imdb">
+                <FaStar />
+
+                {film.imdb ||
+                  "N/A"}
+              </span>
+
+              <span>
+                {
+                  film.year
                 }
-                title={`${film.title} movie`}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              />
+              </span>
+
+              <span>
+                {
+                  film.duration
+                }
+              </span>
+
+              <span>
+                {
+                  film.language
+                }
+              </span>
+            </div>
+
+            <div className="movie-categories">
+              {film.category.map(
+                (
+                  category
+                ) => (
+                  <span
+                    key={
+                      category
+                    }
+                  >
+                    {
+                      category
+                    }
+                  </span>
+                )
+              )}
+            </div>
+
+            <p className="movie-summary">
+              {
+                film.summary
+              }
+            </p>
+
+            <div className="movie-facts">
+              <p>
+                <strong>
+                  Director
+                </strong>
+
+                {
+                  film.director
+                }
+              </p>
+
+              <p>
+                <strong>
+                  Country
+                </strong>
+
+                {
+                  film.country
+                }
+              </p>
+
+              <p>
+                <strong>
+                  Studio
+                </strong>
+
+                {
+                  film.production_company
+                }
+              </p>
             </div>
           </div>
-        </section>
+        </div>
+      </motion.section>
 
-        <section className="comments">
-          <h3>
-            💬 Comments
-          </h3>
+      {film.trailer && (
+        <motion.section
+          className="detail-section"
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+        >
+          <div className="detail-section-heading">
+            <div>
+              <span>
+                Preview
+              </span>
 
+              <h2>
+                Official
+                Trailer
+              </h2>
+            </div>
+          </div>
+
+          <div className="video-shell">
+            <iframe
+              src={
+                film.trailer
+              }
+              title={`${film.title} trailer`}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </motion.section>
+      )}
+
+      <motion.section
+        className="detail-section"
+        initial={{
+          opacity: 0,
+          y: 20,
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0,
+        }}
+        viewport={{
+          once: true,
+        }}
+      >
+        <div className="detail-section-heading">
+          <div>
+            <span>
+              Full access
+            </span>
+
+            <h2>
+              Watch Movie
+            </h2>
+          </div>
+        </div>
+
+        <div className="fullmovie">
+          <div className="fullTop">
+            <iframe
+              src={
+                film.full_movie_link
+              }
+              title={`${film.title} movie`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.section
+        className="comments"
+        initial={{
+          opacity: 0,
+          y: 20,
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0,
+        }}
+        viewport={{
+          once: true,
+        }}
+      >
+        <div className="comments-heading">
+          <div>
+            <span>
+              Community
+            </span>
+
+            <h2>
+              Discussion
+            </h2>
+          </div>
+
+          <small>
+            {comments.length}{" "}
+            comments
+          </small>
+        </div>
+
+        {!user ? (
+          <div className="comment-login-box">
+            <p>
+              Filmə baxmaq
+              pulsuzdur.
+              Şərh yazmaq və
+              like etmək üçün
+              hesabınıza daxil
+              olun.
+            </p>
+
+            <Link
+              href="/main/auth/login"
+              className="comment-login-button"
+            >
+              Sign in
+            </Link>
+          </div>
+        ) : (
           <div className="comment-input">
             <div className="textarea-container">
               <textarea
-                placeholder="Rəyinizi yazın..."
+                placeholder="Filmlə bağlı fikrinizi yazın..."
                 value={
                   newComment
                 }
@@ -961,21 +1185,22 @@ const Detail = () => {
                   event
                 ) =>
                   setNewComment(
-                    event.target
+                    event
+                      .target
                       .value
                   )
                 }
               />
 
-              <div className="spoiler-toggle">
-                <label>
+              <div className="comment-composer-actions">
+                <label className="spoiler-check">
                   <input
                     type="checkbox"
                     checked={
-                      isSpoiler
+                      commentSpoiler
                     }
                     onChange={() =>
-                      setIsSpoiler(
+                      setCommentSpoiler(
                         (
                           previous
                         ) =>
@@ -984,11 +1209,15 @@ const Detail = () => {
                     }
                   />
 
-                  🤫
+                  Spoiler
                 </label>
 
                 <button
                   type="button"
+                  className="send-button"
+                  disabled={
+                    !newComment.trim()
+                  }
                   onClick={
                     handleAddComment
                   }
@@ -998,248 +1227,237 @@ const Detail = () => {
               </div>
             </div>
           </div>
+        )}
 
-          <div className="comments-items">
-            <div className="comments-list">
-              {comments.map(
-                (comment) => (
-                  <div
-                    key={
-                      comment.id
-                    }
-                    className="comment-item"
-                  >
-                    <div className="comment-header">
-                      <div className="user-avatar">
-                        <img
-                          src={
-                            comment.userProfileImage ||
-                            DEFAULT_AVATAR
-                          }
-                          alt="Profil"
-                        />
-                      </div>
+        <div className="comments-list">
+          {comments.length ===
+          0 ? (
+            <div className="comments-empty">
+              Hələ şərh
+              yoxdur. İlk
+              fikri sən
+              paylaş.
+            </div>
+          ) : (
+            comments.map(
+              (
+                comment
+              ) => (
+                <article
+                  key={
+                    comment.id
+                  }
+                  className="comment-item"
+                >
+                  <div className="comment-header">
+                    <img
+                      src={
+                        comment.userProfileImage ||
+                        DEFAULT_AVATAR
+                      }
+                      alt=""
+                    />
 
-                      <div>
-                        <div className="user-info-c">
-                          <span className="comment-author">
-                            {comment.username ||
-                              "İstifadəçi"}
-                          </span>
+                    <div>
+                      <strong>
+                        {
+                          comment.username
+                        }
+                      </strong>
 
-                          <span className="comment-time">
-                            {" "}
-                            🕒{" "}
-                            {formatDate(
-                              comment.timestamp
-                            )}
-                          </span>
-                        </div>
-                      </div>
+                      <span>
+                        {
+                          formatDate(
+                            comment.timestamp
+                          )
+                        }
+                      </span>
                     </div>
 
-                    <p className="comment-text">
-                      {comment.isSpoiler &&
-                      !comment.showSpoiler ? (
-                        <span
-                          className="spoiler-warning"
+                    {validUserId ===
+                      comment.user_id && (
+                      <button
+                        type="button"
+                        className="delete-btn"
+                        onClick={() =>
+                          handleDeleteComment(
+                            comment.id
+                          )
+                        }
+                      >
+                        <AiOutlineClose />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="comment-text">
+                    {comment.isSpoiler &&
+                    !comment.showSpoiler ? (
+                      <button
+                        type="button"
+                        className="spoiler-warning"
+                        onClick={() =>
+                          showCommentSpoiler(
+                            comment.id
+                          )
+                        }
+                      >
+                        ⚠️ Spoiler.
+                        Göstərmək üçün
+                        kliklə.
+                      </button>
+                    ) : (
+                      comment.comment
+                    )}
+                  </div>
+
+                  <div className="comment-actions">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleLike(
+                          comment.id
+                        )
+                      }
+                    >
+                      <FaFire />
+
+                      {
+                        comment.flames
+                      }
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!user) {
+                          requireLogin();
+                          return;
+                        }
+
+                        setReplyingTo(
+                          comment.id
+                        );
+                      }}
+                    >
+                      Reply
+                    </button>
+                  </div>
+
+                  {replyingTo ===
+                    comment.id && (
+                    <div className="reply-input">
+                      <textarea
+                        placeholder="Cavab yaz..."
+                        value={
+                          newReply
+                        }
+                        onChange={(
+                          event
+                        ) =>
+                          setNewReply(
+                            event
+                              .target
+                              .value
+                          )
+                        }
+                      />
+
+                      <div className="reply-actions">
+                        <label className="spoiler-check">
+                          <input
+                            type="checkbox"
+                            checked={
+                              replySpoiler
+                            }
+                            onChange={() =>
+                              setReplySpoiler(
+                                (
+                                  previous
+                                ) =>
+                                  !previous
+                              )
+                            }
+                          />
+
+                          Spoiler
+                        </label>
+
+                        <button
+                          type="button"
+                          className="send-button"
                           onClick={() =>
-                            showCommentSpoiler(
+                            handleReply(
                               comment.id
                             )
                           }
                         >
-                          ⚠️ Bu şərh
-                          spoiler ehtiva
-                          edir! Açmaq üçün
-                          klikləyin.
-                        </span>
-                      ) : (
-                        comment.comment
-                      )}
-                    </p>
-
-                    <div className="comment-actions">
-                      <button
-                        type="button"
-                        className="like-btn"
-                        onClick={() =>
-                          handleLike(
-                            comment.id
-                          )
-                        }
-                      >
-                        <FaFire className="fire-icon" />{" "}
-                        {
-                          comment.flames
-                        }
-                      </button>
-
-                      {loggedInUserId ===
-                        comment.user_id && (
-                        <button
-                          type="button"
-                          className="delete-btn"
-                          onClick={() =>
-                            handleDeleteComment(
-                              comment.id,
-                              comment.user_id
-                            )
-                          }
-                        >
-                          <AiOutlineClose className="delete-icon" />
+                          <RiSendPlaneLine />
                         </button>
-                      )}
-
-                      <button
-                        type="button"
-                        className="reply-btn"
-                        onClick={() =>
-                          setReplyingTo(
-                            comment.id
-                          )
-                        }
-                      >
-                        💬 Cavab yaz
-                      </button>
-                    </div>
-
-                    {replyingTo ===
-                      comment.id && (
-                      <div className="reply-input">
-                        <textarea
-                          placeholder="Cavabınızı yazın..."
-                          value={
-                            newReply
-                          }
-                          onChange={(
-                            event
-                          ) =>
-                            setNewReply(
-                              event
-                                .target
-                                .value
-                            )
-                          }
-                        />
-
-                        <div className="spoiler-next">
-                          <div className="spoiler-toggle">
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={
-                                  isSpoiler
-                                }
-                                onChange={() =>
-                                  setIsSpoiler(
-                                    (
-                                      previous
-                                    ) =>
-                                      !previous
-                                  )
-                                }
-                              />
-
-                              🤫
-                            </label>
-
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleReply(
-                                  comment.id,
-                                  newReply,
-                                  isSpoiler
-                                )
-                              }
-                            >
-                              <RiSendPlaneLine />
-                            </button>
-                          </div>
-                        </div>
 
                         <button
                           type="button"
-                          onClick={() =>
+                          className="close-reply-btn"
+                          onClick={() => {
                             setReplyingTo(
                               null
-                            )
-                          }
-                          className="close-reply-btn"
+                            );
+
+                            setNewReply(
+                              ""
+                            );
+
+                            setReplySpoiler(
+                              false
+                            );
+                          }}
                         >
                           <GrFormClose />
                         </button>
                       </div>
-                    )}
+                    </div>
+                  )}
 
-                    {comment.replies &&
-                      comment
-                        .replies
-                        .length >
-                        0 && (
-                        <div className="comment-replies">
-                          {comment.replies.map(
-                            (
-                              reply
-                            ) => (
-                              <div
-                                key={
-                                  reply.id
-                                }
-                                className="comment-item reply-item"
-                              >
-                                <div className="comment-header">
-                                  <div className="user-avatar">
-                                    <img
-                                      src={
-                                        reply.userProfileImage ||
-                                        DEFAULT_AVATAR
-                                      }
-                                      alt="Profil"
-                                    />
-                                  </div>
+                  {comment.replies &&
+                    comment.replies.length >
+                      0 && (
+                      <div className="comment-replies">
+                        {comment.replies.map(
+                          (
+                            reply
+                          ) => (
+                            <article
+                              key={
+                                reply.id
+                              }
+                              className="reply-item"
+                            >
+                              <div className="comment-header">
+                                <img
+                                  src={
+                                    reply.userProfileImage ||
+                                    DEFAULT_AVATAR
+                                  }
+                                  alt=""
+                                />
 
-                                  <div className="user-info-c">
-                                    <span className="comment-author">
-                                      {reply.username ||
-                                        "İstifadəçi"}
-                                    </span>
+                                <div>
+                                  <strong>
+                                    {
+                                      reply.username
+                                    }
+                                  </strong>
 
-                                    <span className="comment-time">
-                                      {" "}
-                                      🕒{" "}
-                                      {formatDate(
+                                  <span>
+                                    {
+                                      formatDate(
                                         reply.timestamp
-                                      )}
-                                    </span>
-                                  </div>
+                                      )
+                                    }
+                                  </span>
                                 </div>
 
-                                <p className="comment-text">
-                                  {reply.isSpoiler &&
-                                  !reply.showSpoiler ? (
-                                    <span
-                                      className="spoiler-warning"
-                                      onClick={() =>
-                                        toggleReplySpoiler(
-                                          comment.id,
-                                          reply.id
-                                        )
-                                      }
-                                    >
-                                      ⚠️ Bu cavab
-                                      spoiler
-                                      ehtiva edir!
-                                      Açmaq üçün
-                                      klikləyin.
-                                    </span>
-                                  ) : (
-                                    reply.comment
-                                  )}
-                                </p>
-
-                                {loggedInUserId ===
+                                {validUserId ===
                                   reply.user_id && (
                                   <button
                                     type="button"
@@ -1247,27 +1465,48 @@ const Detail = () => {
                                     onClick={() =>
                                       handleDeleteReply(
                                         comment.id,
-                                        reply.id,
-                                        reply.user_id
+                                        reply.id
                                       )
                                     }
                                   >
-                                    <AiOutlineClose className="delete-icon" />
+                                    <AiOutlineClose />
                                   </button>
                                 )}
                               </div>
-                            )
-                          )}
-                        </div>
-                      )}
-                  </div>
-                )
-              )}
-            </div>
-          </div>
-        </section>
-      </main>
-    </ProtectedRoute>
+
+                              <div className="comment-text">
+                                {reply.isSpoiler &&
+                                !reply.showSpoiler ? (
+                                  <button
+                                    type="button"
+                                    className="spoiler-warning"
+                                    onClick={() =>
+                                      toggleReplySpoiler(
+                                        comment.id,
+                                        reply.id
+                                      )
+                                    }
+                                  >
+                                    ⚠️ Spoiler.
+                                    Açmaq üçün
+                                    kliklə.
+                                  </button>
+                                ) : (
+                                  reply.comment
+                                )}
+                              </div>
+                            </article>
+                          )
+                        )}
+                      </div>
+                    )}
+                </article>
+              )
+            )
+          )}
+        </div>
+      </motion.section>
+    </main>
   );
 };
 
