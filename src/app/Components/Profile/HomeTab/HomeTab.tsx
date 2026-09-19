@@ -9,7 +9,7 @@ import type {
   User,
 } from "@/app/redux/features/authSlice/loginSlice";
 
-import './HomeTab.css';
+import "./hometab.css";
 
 interface HomeTabProps {
   user: User;

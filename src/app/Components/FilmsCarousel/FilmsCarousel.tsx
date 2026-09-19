@@ -36,7 +36,7 @@ import {
 
 import WishlistButton from "../WishlistButton/WishlistButton";
 
-import './FilmsCarousel.css'; 
+import "./filmsCarousel.css";
 
 const FilmsCarousel = () => {
   const goToDetail =
