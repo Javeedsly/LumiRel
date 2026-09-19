@@ -2,15 +2,13 @@
 
 import Link from "next/link";
 
-import {
-  useState,
-} from "react";
+import { useState } from "react";
 
 import {
-  FaUserEdit,
+  FaBars,
   FaHeart,
   FaSignOutAlt,
-  FaBars,
+  FaUserEdit,
 } from "react-icons/fa";
 
 import {
@@ -18,16 +16,23 @@ import {
   MdHome,
 } from "react-icons/md";
 
-import type {
-  User,
-} from "@/app/redux/features/authSlice/loginSlice";
+import type { User } from "@/app/redux/features/authSlice/loginSlice";
+
+type ProfileTab =
+  | "home"
+  | "edit"
+  | "favorites";
 
 interface ProfileSidebarProps {
   user: User;
 
+  activeTab:
+    ProfileTab;
+
   handleTabChange:
     (
-      tab: string
+      tab:
+        ProfileTab
     ) => void;
 
   setShowLogoutConfirm:
@@ -42,6 +47,7 @@ const DEFAULT_AVATAR =
 
 const ProfileSidebar = ({
   user,
+  activeTab,
   handleTabChange,
   setShowLogoutConfirm,
 }: ProfileSidebarProps) => {
@@ -50,6 +56,27 @@ const ProfileSidebar = ({
     setCollapsed,
   ] =
     useState(false);
+
+  const fullName =
+    [
+      user.name,
+      user.surname,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim() ||
+    user.username ||
+    "LumiReel User";
+
+  const navClass = (
+    tab:
+      ProfileTab
+  ) =>
+    `nav-item ${
+      activeTab === tab
+        ? "nav-item--active"
+        : ""
+    }`;
 
   return (
     <aside
@@ -65,13 +92,11 @@ const ProfileSidebar = ({
           className="toggle-button"
           onClick={() =>
             setCollapsed(
-              (
-                previous
-              ) =>
+              (previous) =>
                 !previous
             )
           }
-          aria-label="Toggle sidebar"
+          aria-label="Toggle profile sidebar"
         >
           <FaBars />
         </button>
@@ -82,12 +107,20 @@ const ProfileSidebar = ({
               user.profileImage ||
               DEFAULT_AVATAR
             }
-            alt="Profil"
+            alt={
+              fullName
+            }
             className="profile-image"
           />
 
           {!collapsed && (
             <div className="profile-text">
+              <strong>
+                {
+                  fullName
+                }
+              </strong>
+
               <p className="email">
                 {user.email ||
                   "LumiReel User"}
@@ -105,12 +138,16 @@ const ProfileSidebar = ({
               "home"
             )
           }
-          className="nav-item"
+          className={
+            navClass(
+              "home"
+            )
+          }
         >
           <MdHome />
 
           {!collapsed &&
-            "Home"}
+            "Overview"}
         </button>
 
         <button
@@ -120,12 +157,16 @@ const ProfileSidebar = ({
               "edit"
             )
           }
-          className="nav-item"
+          className={
+            navClass(
+              "edit"
+            )
+          }
         >
           <FaUserEdit />
 
           {!collapsed &&
-            "Profile Edit"}
+            "Edit Profile"}
         </button>
 
         <button
@@ -135,7 +176,11 @@ const ProfileSidebar = ({
               "favorites"
             )
           }
-          className="nav-item"
+          className={
+            navClass(
+              "favorites"
+            )
+          }
         >
           <FaHeart />
 
@@ -150,7 +195,7 @@ const ProfileSidebar = ({
           <MdArrowBack />
 
           {!collapsed &&
-            "Back to Homepage"}
+            "Back Home"}
         </Link>
 
         <button
@@ -165,7 +210,7 @@ const ProfileSidebar = ({
           <FaSignOutAlt />
 
           {!collapsed &&
-            "Logout"}
+            "Sign Out"}
         </button>
       </nav>
     </aside>

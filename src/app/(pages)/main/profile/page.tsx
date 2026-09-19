@@ -1,25 +1,21 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useState } from "react";
+
+import { useRouter } from "next/navigation";
 
 import {
-  useRouter,
-} from "next/navigation";
-
-import {
-  useSelector,
   useDispatch,
+  useSelector,
 } from "react-redux";
 
 import {
   Button,
   Dialog,
   DialogActions,
+  DialogContent,
+  DialogContentText,
   DialogTitle,
-  CircularProgress,
 } from "@mui/material";
 
 import type {
@@ -27,12 +23,9 @@ import type {
   AppDispatch,
 } from "@/app/redux/store/store";
 
-import type {
-  User,
-} from "@/app/redux/features/authSlice/loginSlice";
+import type { User } from "@/app/redux/features/authSlice/loginSlice";
 
 import {
-  getUserControl,
   logout,
   updateUserProfile,
 } from "@/app/redux/features/authSlice/loginSlice";
@@ -45,202 +38,166 @@ import ProtectedRoute from "@/app/Components/ProtectedRoute/ProtectedRoute";
 
 import "./profile.css";
 
-const ProfilePage =
-  () => {
-    const router =
-      useRouter();
+type ProfileTab =
+  | "home"
+  | "edit"
+  | "favorites";
 
-    const dispatch =
-      useDispatch<AppDispatch>();
+const ProfileContent = () => {
+  const router =
+    useRouter();
 
-    const user =
-      useSelector(
-        (
-          state:
-            RootState
-        ) =>
-          state.auth
-            .user
-      );
+  const dispatch =
+    useDispatch<AppDispatch>();
 
-    const [
-      activeTab,
-      setActiveTab,
-    ] =
-      useState(
-        "home"
-      );
+  const user =
+    useSelector(
+      (state: RootState) =>
+        state.auth.user
+    );
 
-    const [
-      showLogoutConfirm,
-      setShowLogoutConfirm,
-    ] =
-      useState(
-        false
-      );
+  const [
+    activeTab,
+    setActiveTab,
+  ] =
+    useState<ProfileTab>(
+      "home"
+    );
 
-    const [
-      loading,
-      setLoading,
-    ] =
-      useState(
-        true
-      );
+  const [
+    showLogoutConfirm,
+    setShowLogoutConfirm,
+  ] =
+    useState(false);
 
-    useEffect(() => {
-      dispatch(
-        getUserControl()
-      ).finally(
-        () => {
-          setLoading(
-            false
-          );
-        }
-      );
-    }, [dispatch]);
+  if (!user) {
+    return null;
+  }
 
-    useEffect(() => {
-      if (
-        !loading &&
-        !user
-      ) {
+  const handleUpdateProfile =
+    async (
+      values:
+        Partial<User>
+    ) => {
+      await dispatch(
+        updateUserProfile({
+          id: user.id,
+          updatedData:
+            values,
+        })
+      ).unwrap();
+    };
+
+  const handleLogout =
+    async () => {
+      try {
+        await dispatch(
+          logout()
+        ).unwrap();
+      } finally {
         router.replace(
           "/main/auth/login"
         );
       }
-    }, [
-      user,
-      loading,
-      router,
-    ]);
+    };
 
-    const handleUpdateProfile =
-      async (
-        values:
-          Partial<User>
-      ) => {
-        if (!user) {
-          return;
+  return (
+    <main className="profile-page">
+      <div className="profile-container">
+        <ProfileSidebar
+          user={user}
+          activeTab={
+            activeTab
+          }
+          handleTabChange={
+            setActiveTab
+          }
+          setShowLogoutConfirm={
+            setShowLogoutConfirm
+          }
+        />
+
+        <section className="profile-content">
+          {activeTab ===
+            "home" && (
+            <HomeTab
+              user={user}
+            />
+          )}
+
+          {activeTab ===
+            "edit" && (
+            <ProfileEdit
+              user={user}
+              handleUpdateProfile={
+                handleUpdateProfile
+              }
+            />
+          )}
+
+          {activeTab ===
+            "favorites" && (
+            <FavoritesPanel />
+          )}
+        </section>
+      </div>
+
+      <Dialog
+        open={
+          showLogoutConfirm
         }
+        onClose={() =>
+          setShowLogoutConfirm(
+            false
+          )
+        }
+        PaperProps={{
+          className:
+            "logout-dialog",
+        }}
+      >
+        <DialogTitle>
+          Sign out?
+        </DialogTitle>
 
-        await dispatch(
-          updateUserProfile({
-            id:
-              user.id,
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to sign
+            out of LumiReel?
+          </DialogContentText>
+        </DialogContent>
 
-            updatedData:
-              values,
-          })
-        ).unwrap();
-      };
-
-    const handleLogout =
-      async () => {
-        await dispatch(
-          logout()
-        ).unwrap();
-
-        router.replace(
-          "/main/auth/login"
-        );
-      };
-
-    if (loading) {
-      return (
-        <div className="profile-loading">
-          <CircularProgress />
-        </div>
-      );
-    }
-
-    if (!user) {
-      return null;
-    }
-
-    return (
-      <ProtectedRoute>
-        <div className="profile-container">
-          <ProfileSidebar
-            user={
-              user
-            }
-            handleTabChange={
-              setActiveTab
-            }
-            setShowLogoutConfirm={
-              setShowLogoutConfirm
-            }
-          />
-
-          <div className="profile-content">
-            {activeTab ===
-              "home" && (
-              <HomeTab
-                user={
-                  user
-                }
-              />
-            )}
-
-            {activeTab ===
-              "edit" && (
-              <ProfileEdit
-                user={
-                  user
-                }
-                handleUpdateProfile={
-                  handleUpdateProfile
-                }
-              />
-            )}
-
-            {activeTab ===
-              "favorites" && (
-              <FavoritesPanel />
-            )}
-          </div>
-
-          <Dialog
-            open={
-              showLogoutConfirm
-            }
-            onClose={() =>
+        <DialogActions>
+          <Button
+            onClick={() =>
               setShowLogoutConfirm(
                 false
               )
             }
           >
-            <DialogTitle>
-              Çıkış yapmak
-              istediğinize
-              emin
-              misiniz?
-            </DialogTitle>
+            Cancel
+          </Button>
 
-            <DialogActions>
-              <Button
-                onClick={() =>
-                  setShowLogoutConfirm(
-                    false
-                  )
-                }
-              >
-                ❌ Hayır
-              </Button>
+          <Button
+            onClick={
+              handleLogout
+            }
+            color="error"
+          >
+            Sign out
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </main>
+  );
+};
 
-              <Button
-                onClick={
-                  handleLogout
-                }
-                color="error"
-              >
-                ✔️ Evet
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      </ProtectedRoute>
-    );
-  };
+const ProfilePage = () => {
+  return (
+    <ProtectedRoute>
+      <ProfileContent />
+    </ProtectedRoute>
+  );
+};
 
 export default ProfilePage;

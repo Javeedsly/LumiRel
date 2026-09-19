@@ -1,8 +1,8 @@
 "use client";
 
-import {
-  useEffect,
-} from "react";
+import { useState } from "react";
+
+import { useRouter } from "next/navigation";
 
 import {
   useDispatch,
@@ -10,26 +10,18 @@ import {
 } from "react-redux";
 
 import {
-  IoIosHeartDislike,
-} from "react-icons/io";
-
-import {
-  PiHeartStraightFill,
-} from "react-icons/pi";
+  FaHeart,
+  FaRegHeart,
+} from "react-icons/fa";
 
 import type {
   RootState,
   AppDispatch,
 } from "@/app/redux/store/store";
 
-import type {
-  Film,
-} from "@/app/redux/features/apiSlice/apiSlice";
+import type { Film } from "@/app/redux/features/apiSlice/apiSlice";
 
-import {
-  getUserControl,
-  updateWishlist,
-} from "@/app/redux/features/authSlice/loginSlice";
+import { updateWishlist } from "@/app/redux/features/authSlice/loginSlice";
 
 import "./wishlistButton.css";
 
@@ -43,11 +35,20 @@ export default function WishlistButton({
   const dispatch =
     useDispatch<AppDispatch>();
 
+  const router =
+    useRouter();
+
   const user =
     useSelector(
       (state: RootState) =>
         state.auth.user
     );
+
+  const [
+    updating,
+    setUpdating,
+  ] =
+    useState(false);
 
   const isWishlisted =
     Boolean(
@@ -62,26 +63,21 @@ export default function WishlistButton({
       )
     );
 
-  useEffect(() => {
-    if (!user) {
-      dispatch(
-        getUserControl()
-      );
-    }
-  }, [
-    dispatch,
-    user,
-  ]);
-
   const handleWishlistToggle =
     async () => {
       if (!user) {
-        alert(
-          "Wishlist üçün daxil olun!"
+        router.push(
+          "/main/auth/login"
         );
 
         return;
       }
+
+      if (updating) {
+        return;
+      }
+
+      setUpdating(true);
 
       try {
         await dispatch(
@@ -97,6 +93,10 @@ export default function WishlistButton({
           "Wishlist update error:",
           error
         );
+      } finally {
+        setUpdating(
+          false
+        );
       }
     };
 
@@ -106,12 +106,29 @@ export default function WishlistButton({
       onClick={
         handleWishlistToggle
       }
-      className="relative-wish"
+      disabled={
+        updating
+      }
+      className={`relative-wish ${
+        isWishlisted
+          ? "relative-wish--active"
+          : ""
+      }`}
+      aria-label={
+        isWishlisted
+          ? `Remove ${movie.title} from favorites`
+          : `Add ${movie.title} to favorites`
+      }
+      title={
+        isWishlisted
+          ? "Remove from favorites"
+          : "Add to favorites"
+      }
     >
       {isWishlisted ? (
-        <IoIosHeartDislike className="w-6 h-6 text-red-500 transition-all" />
+        <FaHeart />
       ) : (
-        <PiHeartStraightFill className="w-6 h-6 text-gray-400 transition-all" />
+        <FaRegHeart />
       )}
     </button>
   );
