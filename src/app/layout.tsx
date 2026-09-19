@@ -1,24 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
-import { usePathname } from "next/navigation";
+import type {
+  ReactNode,
+} from "react";
 
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  usePathname,
+} from "next/navigation";
 
-import { useDispatch } from "react-redux";
+import {
+  AnimatePresence,
+  motion,
+} from "framer-motion";
 
-import type { AppDispatch } from "./redux/store/store";
+import {
+  useDispatch,
+} from "react-redux";
 
-import { getUserControl } from "./redux/features/authSlice/loginSlice";
+import type {
+  AppDispatch,
+} from "./redux/store/store";
 
-import { ReduxProvider } from "./redux/store/_page";
+import {
+  getUserControl,
+} from "./redux/features/authSlice/loginSlice";
+
+import {
+  ReduxProvider,
+} from "./redux/store/_page";
 
 import Header from "./Components/Header/Header";
 import Footer from "./Components/Footer/Footer";
 
 import "./globals.css";
+import "./responsive-media.css";
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -37,52 +57,82 @@ const AppShell = ({
   showPublicLayout,
   booting,
 }: AppShellProps) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch =
+    useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(getUserControl());
+    dispatch(
+      getUserControl()
+    );
   }, [dispatch]);
 
   return (
     <>
       <AnimatePresence>
-        {booting && showPublicLayout && (
-          <motion.div
-            className="loading-screen"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
-          >
+        {booting &&
+          showPublicLayout && (
             <motion.div
-              className="loading-text"
-              initial={{ opacity: 0, scale: 0.92 }}
-              animate={{ opacity: 1, scale: 1 }}
+              className="loading-screen"
+              initial={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
               transition={{
-                duration: 0.45,
-                ease: [0.22, 1, 0.36, 1],
+                duration: 0.35,
               }}
             >
-              LUMIREEL
+              <motion.div
+                className="loading-text"
+                initial={{
+                  opacity: 0,
+                  scale: 0.92,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                }}
+                transition={{
+                  duration: 0.45,
+                  ease: [
+                    0.22,
+                    1,
+                    0.36,
+                    1,
+                  ],
+                }}
+              >
+                LUMIREEL
+              </motion.div>
+
+              <div className="loading-glow" />
+
+              <div className="loading-rings">
+                <span />
+                <span />
+                <span />
+              </div>
             </motion.div>
-
-            <div className="loading-glow" />
-
-            <div className="loading-rings">
-              <span />
-              <span />
-              <span />
-            </div>
-          </motion.div>
-        )}
+          )}
       </AnimatePresence>
 
       <div className="content-wrapper">
-        {showPublicLayout && <Header />}
+        {showPublicLayout && (
+          <Header />
+        )}
 
         <main className="page-content">
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence
+            mode="wait"
+            initial={
+              false
+            }
+          >
             <motion.div
-              key={pathname}
+              key={
+                pathname
+              }
               className="route-transition"
               initial={{
                 opacity: 0,
@@ -98,7 +148,12 @@ const AppShell = ({
               }}
               transition={{
                 duration: 0.26,
-                ease: [0.22, 1, 0.36, 1],
+                ease: [
+                  0.22,
+                  1,
+                  0.36,
+                  1,
+                ],
               }}
             >
               {children}
@@ -106,7 +161,9 @@ const AppShell = ({
           </AnimatePresence>
         </main>
 
-        {showPublicLayout && <Footer />}
+        {showPublicLayout && (
+          <Footer />
+        )}
       </div>
     </>
   );
@@ -115,29 +172,53 @@ const AppShell = ({
 export default function RootLayout({
   children,
 }: RootLayoutProps) {
-  const pathname = usePathname();
+  const pathname =
+    usePathname();
 
-  const [booting, setBooting] = useState(true);
+  const [
+    booting,
+    setBooting,
+  ] =
+    useState(true);
 
-  const isAdmin = pathname.startsWith("/admin");
-  const isAuth = pathname.startsWith("/main/auth");
+  const isAdmin =
+    pathname.startsWith(
+      "/admin"
+    );
 
-  const showPublicLayout = !isAdmin && !isAuth;
+  const isAuth =
+    pathname.startsWith(
+      "/main/auth"
+    );
+
+  const showPublicLayout =
+    !isAdmin &&
+    !isAuth;
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setBooting(false);
-    }, 450);
+    const timer =
+      window.setTimeout(
+        () => {
+          setBooting(
+            false
+          );
+        },
+        450
+      );
 
     return () => {
-      window.clearTimeout(timer);
+      window.clearTimeout(
+        timer
+      );
     };
   }, []);
 
   return (
     <html lang="en">
       <head>
-        <title>LumiReel</title>
+        <title>
+          LumiReel
+        </title>
 
         <meta
           name="description"
@@ -149,15 +230,24 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
 
-        <link rel="icon" href="/images.jpeg" />
+        <link
+          rel="icon"
+          href="/images.jpeg"
+        />
       </head>
 
       <body>
         <ReduxProvider>
           <AppShell
-            pathname={pathname}
-            showPublicLayout={showPublicLayout}
-            booting={booting}
+            pathname={
+              pathname
+            }
+            showPublicLayout={
+              showPublicLayout
+            }
+            booting={
+              booting
+            }
           >
             {children}
           </AppShell>

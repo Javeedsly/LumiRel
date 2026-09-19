@@ -1,0 +1,948 @@
+/* =========================================================
+   LumiReel Responsive Media System
+   ========================================================= */
+
+/*
+  Generic safety rule.
+  Images never escape their parent container.
+*/
+img {
+  display: block;
+
+  max-width: 100%;
+
+  height: auto;
+}
+
+/* Prevent media elements from forcing horizontal overflow. */
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+
+/* =========================================================
+   HEADER / AVATAR
+   ========================================================= */
+
+.content-wrapper
+.header__profile-img {
+  display: block;
+
+  width:
+    clamp(
+      34px,
+      3vw,
+      38px
+    );
+
+  height:
+    clamp(
+      34px,
+      3vw,
+      38px
+    );
+
+  aspect-ratio: 1;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 50%;
+}
+
+.content-wrapper
+.header__mobile-profile
+img {
+  width: 38px;
+  height: 38px;
+
+  flex: 0 0 38px;
+
+  aspect-ratio: 1;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 50%;
+}
+
+/* =========================================================
+   HOME HERO / SLIDER
+   ========================================================= */
+
+.page-content
+.slider
+.container {
+  width: 100%;
+
+  height:
+    clamp(
+      430px,
+      45vw,
+      620px
+    );
+}
+
+.page-content
+.slider
+.image {
+  width: 100%;
+  height: 100%;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  /*
+    Keeps faces / main movie subjects from being pushed
+    too far toward the top or bottom.
+  */
+  background-position: center 28%;
+}
+
+.page-content
+.slider
+.thumbnail
+img {
+  width:
+    clamp(
+      54px,
+      5vw,
+      62px
+    );
+
+  height: auto;
+
+  aspect-ratio: 2 / 3;
+
+  flex: 0 0 auto;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 9px;
+}
+
+/* =========================================================
+   HOME MOVIE CARDS
+   ========================================================= */
+
+.page-content
+.custom-wrapper {
+  width: min(
+    calc(
+      100% -
+      (
+        var(--page-gutter) *
+        2
+      )
+    ),
+    1180px
+  );
+}
+
+.page-content
+.custom-box {
+  width: 100%;
+
+  max-width: 360px;
+
+  aspect-ratio: 2 / 3;
+
+  justify-self: center;
+}
+
+.page-content
+.custom-item {
+  width: 100%;
+  height: 100%;
+}
+
+.page-content
+.custom-item
+> img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  transform-origin: center;
+}
+
+/* =========================================================
+   FILMS CAROUSEL
+   ========================================================= */
+
+.page-content
+.film-card {
+  width: 100%;
+
+  aspect-ratio: 2 / 3;
+}
+
+.page-content
+.film-image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  aspect-ratio: 2 / 3;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+/* =========================================================
+   ALL FILMS PAGE
+   ========================================================= */
+
+.page-content
+.catalog-card {
+  width: 100%;
+
+  aspect-ratio: 2 / 3;
+}
+
+.page-content
+.catalog-card-main
+> img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  aspect-ratio: 2 / 3;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+/*
+  Recent movie cards are horizontal cards,
+  so their poster width stays controlled.
+*/
+.page-content
+.recent-card-main {
+  grid-template-columns:
+    clamp(
+      78px,
+      7.5vw,
+      94px
+    )
+    minmax(
+      0,
+      1fr
+    );
+}
+
+.page-content
+.recent-card-main
+img {
+  width: 100%;
+  height: 100%;
+
+  min-height: 0;
+
+  aspect-ratio: 2 / 3;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+/* =========================================================
+   ACTORS PAGE
+   ========================================================= */
+
+.page-content
+.actor-image-wrap {
+  width: 100%;
+
+  aspect-ratio: 4 / 5;
+}
+
+.page-content
+.actor-image-wrap
+img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  aspect-ratio: 4 / 5;
+
+  object-fit: cover;
+
+  /*
+    Actor portraits usually need slightly more top space
+    so faces are not cut off.
+  */
+  object-position: center 18%;
+}
+
+/* =========================================================
+   MOVIE DETAIL PAGE
+   ========================================================= */
+
+.page-content
+.movie-poster-wrap {
+  width: min(
+    100%,
+    310px
+  );
+
+  justify-self: center;
+}
+
+.page-content
+.movie-poster {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  max-width: 310px;
+
+  aspect-ratio: 2 / 3;
+
+  margin-inline: auto;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Movie backdrop */
+.page-content
+.movie-hero-bg {
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  background-position:
+    center
+    25%;
+}
+
+/* Comment avatars */
+.page-content
+.comment-header
+img {
+  display: block;
+
+  width: 38px;
+  height: 38px;
+
+  flex: 0 0 38px;
+
+  aspect-ratio: 1;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 50%;
+}
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+.page-content
+.profile-image {
+  display: block;
+
+  width:
+    clamp(
+      64px,
+      7vw,
+      80px
+    );
+
+  height:
+    clamp(
+      64px,
+      7vw,
+      80px
+    );
+
+  aspect-ratio: 1;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 50%;
+}
+
+.page-content
+.profile-sidebar.collapsed
+.profile-image {
+  width: 48px;
+  height: 48px;
+}
+
+/* Profile home tab */
+.page-content
+.profile-img {
+  display: block;
+
+  width:
+    clamp(
+      76px,
+      8vw,
+      96px
+    );
+
+  height:
+    clamp(
+      76px,
+      8vw,
+      96px
+    );
+
+  aspect-ratio: 1;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 50%;
+}
+
+/* Profile edit avatar */
+.page-content
+.profile-avatar {
+  width:
+    clamp(
+      88px,
+      9vw,
+      104px
+    ) !important;
+
+  height:
+    clamp(
+      88px,
+      9vw,
+      104px
+    ) !important;
+
+  aspect-ratio: 1;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+}
+
+.page-content
+.profile-avatar
+img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+/* =========================================================
+   FAVORITES
+   ========================================================= */
+
+.page-content
+.favorite-card {
+  width: 100%;
+
+  aspect-ratio: 2 / 3;
+}
+
+.page-content
+.favorite-poster {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  aspect-ratio: 2 / 3;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+/* =========================================================
+   SEARCH RESULTS
+   ========================================================= */
+
+.content-wrapper
+.sugItem
+img {
+  width: 48px;
+  height: auto;
+
+  flex:
+    0
+    0
+    48px;
+
+  aspect-ratio: 2 / 3;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 8px;
+}
+
+/* =========================================================
+   FILM RECOMMENDER
+   ========================================================= */
+
+.content-wrapper
+.movie-card-main
+img {
+  display: block;
+
+  width: 64px;
+  height: auto;
+
+  aspect-ratio: 2 / 3;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: 8px;
+}
+
+.content-wrapper
+.movie-card-main {
+  grid-template-columns:
+    64px
+    minmax(
+      0,
+      1fr
+    );
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (
+  max-width:
+    1024px
+) {
+  .page-content
+  .slider
+  .container {
+    height:
+      clamp(
+        440px,
+        58vw,
+        560px
+      );
+  }
+
+  .page-content
+  .custom-box {
+    max-width: 340px;
+  }
+
+  .page-content
+  .movie-poster-wrap,
+  .page-content
+  .movie-poster {
+    max-width: 270px;
+  }
+}
+
+/* =========================================================
+   TABLET / LARGE MOBILE
+   ========================================================= */
+
+@media (
+  max-width:
+    768px
+) {
+  .page-content
+  .slider
+  .container {
+    height:
+      clamp(
+        440px,
+        76vw,
+        530px
+      );
+  }
+
+  .page-content
+  .slider
+  .image {
+    background-position:
+      center
+      24%;
+  }
+
+  .page-content
+  .custom-box {
+    max-width: 330px;
+  }
+
+  .page-content
+  .actor-card {
+    width: 100%;
+  }
+
+  .page-content
+  .movie-poster-wrap,
+  .page-content
+  .movie-poster {
+    width:
+      clamp(
+        180px,
+        35vw,
+        240px
+      );
+
+    max-width: 240px;
+  }
+
+  .content-wrapper
+  .movie-card-main {
+    grid-template-columns:
+      58px
+      minmax(
+        0,
+        1fr
+      );
+  }
+
+  .content-wrapper
+  .movie-card-main
+  img {
+    width: 58px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (
+  max-width:
+    520px
+) {
+  .page-content
+  .slider
+  .container {
+    height:
+      clamp(
+        440px,
+        126vw,
+        510px
+      );
+  }
+
+  /*
+    On phones the hero becomes portrait-ish.
+    This positioning keeps the main image subject visible.
+  */
+  .page-content
+  .slider
+  .image {
+    background-position:
+      center
+      22%;
+  }
+
+  .page-content
+  .slider
+  .thumbnail
+  img {
+    width: 54px;
+  }
+
+  .page-content
+  .custom-wrapper {
+    max-width: 380px;
+  }
+
+  .page-content
+  .custom-box {
+    width:
+      min(
+        100%,
+        320px
+      );
+
+    max-width: 320px;
+  }
+
+  .page-content
+  .allfilms-container {
+    width: 100%;
+
+    max-width: 360px;
+
+    margin-inline: auto;
+  }
+
+  .page-content
+  .film-card {
+    width: min(
+      100%,
+      260px
+    );
+
+    max-width: 260px;
+
+    margin-inline: auto;
+  }
+
+  /*
+    One-column actor cards could otherwise become huge
+    on phones.
+  */
+  .page-content
+  .actor-card {
+    width:
+      min(
+        100%,
+        340px
+      );
+
+    max-width: 340px;
+
+    margin-inline: auto;
+  }
+
+  .page-content
+  .movie-poster-wrap,
+  .page-content
+  .movie-poster {
+    width:
+      clamp(
+        170px,
+        49vw,
+        205px
+      );
+
+    max-width: 205px;
+  }
+
+  .page-content
+  .movie-poster-wrap {
+    margin-inline: auto;
+  }
+
+  .page-content
+  .recent-card-main {
+    grid-template-columns:
+      82px
+      minmax(
+        0,
+        1fr
+      );
+  }
+
+  .page-content
+  .profile-img {
+    width: 82px;
+    height: 82px;
+  }
+
+  .page-content
+  .profile-avatar {
+    width:
+      92px !important;
+
+    height:
+      92px !important;
+  }
+
+  .content-wrapper
+  .sugItem
+  img {
+    width: 44px;
+
+    flex:
+      0
+      0
+      44px;
+  }
+
+  .content-wrapper
+  .movie-card-main {
+    grid-template-columns:
+      54px
+      minmax(
+        0,
+        1fr
+      );
+  }
+
+  .content-wrapper
+  .movie-card-main
+  img {
+    width: 54px;
+  }
+}
+
+/* =========================================================
+   390px MOBILE
+   ========================================================= */
+
+@media (
+  max-width:
+    390px
+) {
+  .page-content
+  .slider
+  .container {
+    height:
+      clamp(
+        430px,
+        128vw,
+        490px
+      );
+  }
+
+  .page-content
+  .custom-box {
+    width:
+      min(
+        100%,
+        290px
+      );
+  }
+
+  .page-content
+  .film-card {
+    max-width: 245px;
+  }
+
+  .page-content
+  .actor-card {
+    max-width: 310px;
+  }
+
+  .page-content
+  .movie-poster-wrap,
+  .page-content
+  .movie-poster {
+    width:
+      clamp(
+        165px,
+        50vw,
+        190px
+      );
+
+    max-width: 190px;
+  }
+
+  .page-content
+  .favorite-info {
+    padding:
+      32px
+      10px
+      11px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (
+  max-width:
+    360px
+) {
+  .page-content
+  .slider
+  .container {
+    height: 450px;
+  }
+
+  .page-content
+  .custom-box {
+    max-width: 270px;
+  }
+
+  .page-content
+  .film-card {
+    max-width: 230px;
+  }
+
+  .page-content
+  .actor-card {
+    max-width: 290px;
+  }
+
+  .page-content
+  .recent-card-main {
+    grid-template-columns:
+      74px
+      minmax(
+        0,
+        1fr
+      );
+  }
+
+  .content-wrapper
+  .movie-card-main {
+    grid-template-columns:
+      50px
+      minmax(
+        0,
+        1fr
+      );
+  }
+
+  .content-wrapper
+  .movie-card-main
+  img {
+    width: 50px;
+  }
+}
+
+/* =========================================================
+   HOVER CAPABILITY
+   ========================================================= */
+
+@media (
+  hover: hover
+) {
+  .page-content
+  .film-image,
+  .page-content
+  .catalog-card-main
+  > img,
+  .page-content
+  .favorite-poster,
+  .page-content
+  .custom-item
+  > img,
+  .page-content
+  .actor-image-wrap
+  img {
+    will-change: transform;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+  .page-content
+  .film-image,
+  .page-content
+  .catalog-card-main
+  > img,
+  .page-content
+  .favorite-poster,
+  .page-content
+  .custom-item
+  > img,
+  .page-content
+  .actor-image-wrap
+  img {
+    transition: none;
+  }
+}
