@@ -1,98 +1,330 @@
 "use client";
 
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { RegisterSchema } from "@/app/schema/registerSchema";
-import { FaEye, FaEyeSlash, FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import {
+  useState,
+} from "react";
+
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+} from "formik";
+
+import {
+  useRouter,
+} from "next/navigation";
+
+import {
+  FaEye,
+  FaEyeSlash,
+  FaUser,
+  FaEnvelope,
+  FaLock,
+} from "react-icons/fa";
+
+import {
+  RegisterSchema,
+} from "@/app/schema/registerSchema";
+
+import {
+  registerUser,
+} from "@/app/redux/features/authSlice/registerSlice";
+
+import type {
+  RegisterUserData,
+} from "@/app/redux/features/authSlice/registerSlice";
+
+import type {
+  AppDispatch,
+  RootState,
+} from "@/app/redux/store/store";
+
 import "./register.css";
-import { useRouter } from "next/navigation";
-import { registerUser } from "@/app/redux/features/authSlice/registerSlice";
 
 const Register = () => {
-    const dispatch = useDispatch();
-    const router = useRouter();
-    const { status, error } = useSelector((state) => state.register);
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const dispatch =
+    useDispatch<AppDispatch>();
 
-    return (
-        <div className="register-container">
-            <h2 className="register-title">🚀 LumiReel Dünyasına Addım At!</h2>
+  const router =
+    useRouter();
 
-            <Formik
-                initialValues={{ name: "", surname: "", email: "", password: "", confirmPassword: "" }}
-                validationSchema={RegisterSchema}
-                onSubmit={(values, { setSubmitting }) => {
-                    dispatch(registerUser(values)).finally(() => setSubmitting(false));
-                }}
-            >
-                {({ isSubmitting }) => (
-                    <Form className="register-form">
-                        <div className="input-group">
-                            <label htmlFor="name"><FaUser className="icon" /> Name</label>
-                            <Field id="name" name="name" type="text" className="input-field" />
-                            <ErrorMessage name="name" component="div" className="error-message" />
-                        </div>
+  const {
+    status,
+    error,
+  } = useSelector(
+    (state: RootState) =>
+      state.register
+  );
 
-                        <div className="input-group">
-                            <label htmlFor="surname"><FaUser className="icon" /> Surname</label>
-                            <Field id="surname" name="surname" type="text" className="input-field" />
-                            <ErrorMessage name="surname" component="div" className="error-message" />
-                        </div>
+  const [
+    showPassword,
+    setShowPassword,
+  ] =
+    useState(false);
 
-                        <div className="input-group">
-                            <label htmlFor="email"><FaEnvelope className="icon" /> Email</label>
-                            <Field id="email" name="email" type="text" className="input-field" />
-                            <ErrorMessage name="email" component="div" className="error-message" />
-                            {error && <div className="error-message">{error}</div>}
-                        </div>
+  const [
+    showConfirmPassword,
+    setShowConfirmPassword,
+  ] =
+    useState(false);
 
-                        <div className="input-group">
-                            <label htmlFor="password"><FaLock className="icon" /> Password</label>
-                            <div className="password-wrapper">
-                                <Field
-                                    id="password"
-                                    name="password"
-                                    type={showPassword ? "text" : "password"}
-                                    className={`input-field ${showPassword ? "matrix-mode" : ""}`}
-                                />
-                                <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
-                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                </button>
-                            </div>
-                            <ErrorMessage name="password" component="div" className="error-message" />
-                        </div>
+  const initialValues:
+    RegisterUserData = {
+    name: "",
+    surname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
 
-                        <div className="input-group">
-                            <label htmlFor="confirmPassword"><FaLock className="icon" /> Confirm Password</label>
-                            <div className="password-wrapper">
-                                <Field
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    type={showConfirmPassword ? "text" : "password"}
-                                    className="input-field"
-                                />
-                                <button type="button" className="toggle-password" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                                </button>
-                            </div>
-                            <ErrorMessage name="confirmPassword" component="div" className="error-message" />
-                        </div>
+  return (
+    <div className="register-container">
+      <h2 className="register-title">
+        🚀 LumiReel Dünyasına Addım At!
+      </h2>
 
-                        <button type="submit" disabled={isSubmitting || status === "loading"} className="register-button">
-                            {status === "loading" ? "⏳ Loading..." : "✨ Register"}
-                        </button>
-                    </Form>
-                )}
-            </Formik>
+      <Formik<RegisterUserData>
+        initialValues={
+          initialValues
+        }
+        validationSchema={
+          RegisterSchema
+        }
+        onSubmit={async (
+          values,
+          {
+            setSubmitting,
+          }
+        ) => {
+          try {
+            await dispatch(
+              registerUser(
+                values
+              )
+            ).unwrap();
 
-            <div className="login-link">
-                <p>Already have an account?</p>
-                <button onClick={() => router.push("/main/auth/login")} className="login-button-R">🔑 Sign in</button>
+            router.push(
+              "/main/auth/login"
+            );
+          } catch (submitError) {
+            console.error(
+              "Register error:",
+              submitError
+            );
+          } finally {
+            setSubmitting(
+              false
+            );
+          }
+        }}
+      >
+        {({
+          isSubmitting,
+        }) => (
+          <Form className="register-form">
+            <div className="input-group">
+              <label htmlFor="name">
+                <FaUser className="icon" />{" "}
+                Name
+              </label>
+
+              <Field
+                id="name"
+                name="name"
+                type="text"
+                className="input-field"
+              />
+
+              <ErrorMessage
+                name="name"
+                component="div"
+                className="error-message"
+              />
             </div>
-        </div>
-    );
+
+            <div className="input-group">
+              <label htmlFor="surname">
+                <FaUser className="icon" />{" "}
+                Surname
+              </label>
+
+              <Field
+                id="surname"
+                name="surname"
+                type="text"
+                className="input-field"
+              />
+
+              <ErrorMessage
+                name="surname"
+                component="div"
+                className="error-message"
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="email">
+                <FaEnvelope className="icon" />{" "}
+                Email
+              </label>
+
+              <Field
+                id="email"
+                name="email"
+                type="email"
+                className="input-field"
+              />
+
+              <ErrorMessage
+                name="email"
+                component="div"
+                className="error-message"
+              />
+
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="password">
+                <FaLock className="icon" />{" "}
+                Password
+              </label>
+
+              <div className="password-wrapper">
+                <Field
+                  id="password"
+                  name="password"
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
+                  className={`input-field ${
+                    showPassword
+                      ? "matrix-mode"
+                      : ""
+                  }`}
+                />
+
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() =>
+                    setShowPassword(
+                      (
+                        previous
+                      ) =>
+                        !previous
+                    )
+                  }
+                >
+                  {showPassword ? (
+                    <FaEyeSlash />
+                  ) : (
+                    <FaEye />
+                  )}
+                </button>
+              </div>
+
+              <ErrorMessage
+                name="password"
+                component="div"
+                className="error-message"
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="confirmPassword">
+                <FaLock className="icon" />{" "}
+                Confirm Password
+              </label>
+
+              <div className="password-wrapper">
+                <Field
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={
+                    showConfirmPassword
+                      ? "text"
+                      : "password"
+                  }
+                  className="input-field"
+                />
+
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() =>
+                    setShowConfirmPassword(
+                      (
+                        previous
+                      ) =>
+                        !previous
+                    )
+                  }
+                >
+                  {showConfirmPassword ? (
+                    <FaEyeSlash />
+                  ) : (
+                    <FaEye />
+                  )}
+                </button>
+              </div>
+
+              <ErrorMessage
+                name="confirmPassword"
+                component="div"
+                className="error-message"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={
+                isSubmitting ||
+                status ===
+                  "loading"
+              }
+              className="register-button"
+            >
+              {status ===
+              "loading"
+                ? "⏳ Loading..."
+                : "✨ Register"}
+            </button>
+          </Form>
+        )}
+      </Formik>
+
+      <div className="login-link">
+        <p>
+          Already have an account?
+        </p>
+
+        <button
+          type="button"
+          onClick={() =>
+            router.push(
+              "/main/auth/login"
+            )
+          }
+          className="login-button-R"
+        >
+          🔑 Sign in
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default Register;

@@ -1,8 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "next/navigation";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
+import {
+  useParams,
+} from "next/navigation";
 
 import {
   Card,
@@ -24,85 +34,152 @@ import {
   updateUserProfile,
 } from "@/app/redux/features/authSlice/loginSlice";
 
+import type {
+  User,
+} from "@/app/redux/features/authSlice/loginSlice";
+
 import "./detail.css";
 
-interface UserData {
-  id: string | number;
-  name?: string;
-  surname?: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  cardNumber?: string;
-  profileImage?: string;
-  isPremium?: boolean;
-  role?: string;
-  [key: string]: unknown;
-}
+type EditableField =
+  | "name"
+  | "surname"
+  | "username"
+  | "email"
+  | "cardNumber"
+  | "profileImage";
+
+const createFormData = (
+  user?: User | null
+): User => ({
+  id:
+    user?.id ?? "",
+
+  name:
+    user?.name ??
+    user?.firstName ??
+    "",
+
+  surname:
+    user?.surname ??
+    user?.lastName ??
+    "",
+
+  username:
+    user?.username ??
+    "",
+
+  firstName:
+    user?.firstName,
+
+  lastName:
+    user?.lastName,
+
+  email:
+    user?.email ??
+    "",
+
+  cardNumber:
+    user?.cardNumber ??
+    "",
+
+  profileImage:
+    user?.profileImage ??
+    "",
+
+  isPremium:
+    user?.isPremium ??
+    false,
+
+  role:
+    user?.role,
+
+  password:
+    user?.password,
+
+  wishlist:
+    user?.wishlist,
+
+  premiumStartDate:
+    user?.premiumStartDate,
+
+  premiumCancelDate:
+    user?.premiumCancelDate,
+
+  cardInfo:
+    user?.cardInfo,
+
+  createdAt:
+    user?.createdAt,
+
+  updatedAt:
+    user?.updatedAt,
+});
 
 const UserDetail = () => {
-  const params = useParams();
+  const params =
+    useParams();
+
+  const rawId =
+    params?.id;
 
   const id =
-    typeof params.id === "string"
-      ? params.id
-      : Array.isArray(params.id)
-        ? params.id[0]
+    Array.isArray(rawId)
+      ? rawId[0] ?? ""
+      : typeof rawId ===
+          "string"
+        ? rawId
         : "";
 
   const dispatch =
     useDispatch<AppDispatch>();
 
-  const users = useSelector(
-    (state: RootState) =>
-      state.auth.users
-  ) as UserData[];
+  const users =
+    useSelector(
+      (state: RootState) =>
+        state.auth.users
+    );
 
   const [
     user,
     setUser,
-  ] = useState<UserData | null>(
-    null
-  );
-
-  const [
-    editMode,
-    setEditMode,
-  ] = useState(false);
+  ] =
+    useState<User | null>(
+      null
+    );
 
   const [
     formData,
     setFormData,
-  ] = useState<UserData>({
-    id: "",
-    name: "",
-    surname: "",
-    username: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    cardNumber: "",
-    profileImage: "",
-    isPremium: false,
-  });
+  ] =
+    useState<User>(
+      createFormData()
+    );
+
+  const [
+    editMode,
+    setEditMode,
+  ] =
+    useState(false);
 
   const [
     openSnackbar,
     setOpenSnackbar,
-  ] = useState(false);
+  ] =
+    useState(false);
 
   const [
     snackbarMessage,
     setSnackbarMessage,
-  ] = useState("");
+  ] =
+    useState("");
 
   const [
     snackbarSeverity,
     setSnackbarSeverity,
-  ] = useState<
-    "success" | "error"
-  >("success");
+  ] =
+    useState<
+      "success" | "error"
+    >("success");
 
   useEffect(() => {
     dispatch(getLogin());
@@ -120,60 +197,42 @@ const UserDetail = () => {
           String(id)
       );
 
-    if (foundUser) {
-      setUser(foundUser);
-
-      setFormData({
-        ...foundUser,
-
-        name:
-          foundUser.name ??
-          foundUser.firstName ??
-          "",
-
-        surname:
-          foundUser.surname ??
-          foundUser.lastName ??
-          "",
-
-        username:
-          foundUser.username ??
-          "",
-
-        email:
-          foundUser.email ??
-          "",
-
-        cardNumber:
-          foundUser.cardNumber ??
-          "",
-
-        profileImage:
-          foundUser.profileImage ??
-          "",
-
-        isPremium:
-          foundUser.isPremium ??
-          false,
-      });
+    if (!foundUser) {
+      return;
     }
-  }, [users, id]);
 
-  const handleInputChange = (
-    event: React.ChangeEvent<
-      HTMLInputElement |
-      HTMLTextAreaElement
-    >
-  ) => {
-    const {
-      name,
-      value,
-    } = event.target;
+    setUser(
+      foundUser
+    );
 
     setFormData(
-      (prev) => ({
-        ...prev,
-        [name]: value,
+      createFormData(
+        foundUser
+      )
+    );
+  }, [
+    users,
+    id,
+  ]);
+
+  const handleInputChange = (
+    event:
+      React.ChangeEvent<
+        HTMLInputElement |
+        HTMLTextAreaElement
+      >
+  ) => {
+    const field =
+      event.target
+        .name as EditableField;
+
+    const value =
+      event.target.value;
+
+    setFormData(
+      (previous) => ({
+        ...previous,
+        [field]: value,
       })
     );
   };
@@ -181,16 +240,6 @@ const UserDetail = () => {
   const handleSave =
     async () => {
       if (!id) {
-        setSnackbarMessage(
-          "User ID tapılmadı!"
-        );
-
-        setSnackbarSeverity(
-          "error"
-        );
-
-        setOpenSnackbar(true);
-
         return;
       }
 
@@ -209,17 +258,21 @@ const UserDetail = () => {
         );
 
         setFormData(
-          updatedUser
+          createFormData(
+            updatedUser
+          )
         );
 
-        setEditMode(false);
-
-        setSnackbarMessage(
-          "User updated successfully!"
+        setEditMode(
+          false
         );
 
         setSnackbarSeverity(
           "success"
+        );
+
+        setSnackbarMessage(
+          "User updated successfully!"
         );
       } catch (error) {
         console.error(
@@ -227,62 +280,31 @@ const UserDetail = () => {
           error
         );
 
-        setSnackbarMessage(
-          "Failed to update user!"
-        );
-
         setSnackbarSeverity(
           "error"
         );
+
+        setSnackbarMessage(
+          "Failed to update user!"
+        );
       }
 
-      setOpenSnackbar(true);
+      setOpenSnackbar(
+        true
+      );
     };
 
   const handleCancel = () => {
-    if (user) {
-      setFormData({
-        ...user,
+    setFormData(
+      createFormData(
+        user
+      )
+    );
 
-        name:
-          user.name ??
-          user.firstName ??
-          "",
-
-        surname:
-          user.surname ??
-          user.lastName ??
-          "",
-
-        username:
-          user.username ??
-          "",
-
-        email:
-          user.email ??
-          "",
-
-        cardNumber:
-          user.cardNumber ??
-          "",
-
-        profileImage:
-          user.profileImage ??
-          "",
-
-        isPremium:
-          user.isPremium ??
-          false,
-      });
-    }
-
-    setEditMode(false);
+    setEditMode(
+      false
+    );
   };
-
-  const handleCloseSnackbar =
-    () => {
-      setOpenSnackbar(false);
-    };
 
   if (!id) {
     return (
@@ -301,9 +323,17 @@ const UserDetail = () => {
   }
 
   const displayName =
-    user.name ??
-    user.firstName ??
-    user.username ??
+    [
+      user.name ??
+        user.firstName,
+
+      user.surname ??
+        user.lastName,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim() ||
+    user.username ||
     "User";
 
   return (
@@ -323,7 +353,9 @@ const UserDetail = () => {
                 user.profileImage ||
                 "/default-avatar.png"
               }
-              alt={displayName}
+              alt={
+                displayName
+              }
               className="user-avatar"
             />
           </div>
@@ -351,6 +383,23 @@ const UserDetail = () => {
               name="surname"
               value={
                 formData.surname ??
+                ""
+              }
+              onChange={
+                handleInputChange
+              }
+              disabled={
+                !editMode
+              }
+              fullWidth
+              margin="normal"
+            />
+
+            <TextField
+              label="Username"
+              name="username"
+              value={
+                formData.username ??
                 ""
               }
               onChange={
@@ -399,6 +448,23 @@ const UserDetail = () => {
             />
 
             <TextField
+              label="Profile Image"
+              name="profileImage"
+              value={
+                formData.profileImage ??
+                ""
+              }
+              onChange={
+                handleInputChange
+              }
+              disabled={
+                !editMode
+              }
+              fullWidth
+              margin="normal"
+            />
+
+            <TextField
               label="Premium Status"
               value={
                 formData.isPremium
@@ -416,7 +482,6 @@ const UserDetail = () => {
               <>
                 <Button
                   variant="contained"
-                  color="primary"
                   onClick={
                     handleSave
                   }
@@ -426,7 +491,6 @@ const UserDetail = () => {
 
                 <Button
                   variant="outlined"
-                  color="secondary"
                   onClick={
                     handleCancel
                   }
@@ -437,7 +501,6 @@ const UserDetail = () => {
             ) : (
               <Button
                 variant="contained"
-                color="primary"
                 onClick={() =>
                   setEditMode(
                     true
@@ -458,24 +521,21 @@ const UserDetail = () => {
         autoHideDuration={
           4000
         }
-        onClose={
-          handleCloseSnackbar
+        onClose={() =>
+          setOpenSnackbar(
+            false
+          )
         }
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
       >
         <Alert
           severity={
             snackbarSeverity
           }
-          onClose={
-            handleCloseSnackbar
+          onClose={() =>
+            setOpenSnackbar(
+              false
+            )
           }
-          sx={{
-            width: "100%",
-          }}
         >
           {
             snackbarMessage

@@ -1,10 +1,35 @@
-import { useSelector, useDispatch } from "react-redux";
-import { getFilms } from "@/app/redux/features/apiSlice/apiSlice";
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
+import {
+  getFilms,
+} from "@/app/redux/features/apiSlice/apiSlice";
+
+import type {
+  RootState,
+  AppDispatch,
+} from "@/app/redux/store/store";
 
 export const useGlobalState = () => {
-  const dispatch = useDispatch();
-  const films = useSelector((state: any) => state.films.data);
-  const filmsLoading = useSelector((state: any) => state.films.loading);
+  const dispatch =
+    useDispatch<AppDispatch>();
 
-  return { films, filmsLoading, dispatch, getFilms };
+  const {
+    data: films,
+    loading: filmsLoading,
+    error,
+  } = useSelector(
+    (state: RootState) =>
+      state.films
+  );
+
+  return {
+    films,
+    filmsLoading,
+    error,
+    dispatch,
+    getFilms,
+  };
 };

@@ -1,32 +1,113 @@
-"use client"
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { IoIosHeartDislike } from "react-icons/io";
-import { PiHeartStraightFill } from "react-icons/pi";
+"use client";
+
+import {
+  useEffect,
+} from "react";
+
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
+import {
+  IoIosHeartDislike,
+} from "react-icons/io";
+
+import {
+  PiHeartStraightFill,
+} from "react-icons/pi";
+
+import type {
+  RootState,
+  AppDispatch,
+} from "@/app/redux/store/store";
+
+import type {
+  Film,
+} from "@/app/redux/features/apiSlice/apiSlice";
+
+import {
+  getUserControl,
+  updateWishlist,
+} from "@/app/redux/features/authSlice/loginSlice";
+
 import "./wishlistButton.css";
-import { getUserControl, updateWishlist } from "@/app/redux/features/authSlice/loginSlice";
 
-export default function WishlistButton({ movie }: { movie: any }) {
-  const dispatch = useDispatch();
-  const user = useSelector((state: any) => state.auth.user);
+interface WishlistButtonProps {
+  movie: Film;
+}
 
-  const isWishlisted = user?.wishlist?.some((item: any) => item.id === movie.id);
+export default function WishlistButton({
+  movie,
+}: WishlistButtonProps) {
+  const dispatch =
+    useDispatch<AppDispatch>();
+
+  const user =
+    useSelector(
+      (state: RootState) =>
+        state.auth.user
+    );
+
+  const isWishlisted =
+    Boolean(
+      user?.wishlist?.some(
+        (item) =>
+          String(
+            item.id
+          ) ===
+          String(
+            movie.id
+          )
+      )
+    );
 
   useEffect(() => {
-    dispatch(getUserControl());
-  }, [dispatch]);
-
-  const handleWishlistToggle = () => {
     if (!user) {
-      alert("Wishlist üçün daxil olun!");
-      return;
+      dispatch(
+        getUserControl()
+      );
     }
+  }, [
+    dispatch,
+    user,
+  ]);
 
-    dispatch(updateWishlist({ userId: user.id, movie }));
-  };
+  const handleWishlistToggle =
+    async () => {
+      if (!user) {
+        alert(
+          "Wishlist üçün daxil olun!"
+        );
+
+        return;
+      }
+
+      try {
+        await dispatch(
+          updateWishlist({
+            userId:
+              user.id,
+
+            movie,
+          })
+        ).unwrap();
+      } catch (error) {
+        console.error(
+          "Wishlist update error:",
+          error
+        );
+      }
+    };
 
   return (
-    <button onClick={handleWishlistToggle} className="relative-wish">
+    <button
+      type="button"
+      onClick={
+        handleWishlistToggle
+      }
+      className="relative-wish"
+    >
       {isWishlisted ? (
         <IoIosHeartDislike className="w-6 h-6 text-red-500 transition-all" />
       ) : (

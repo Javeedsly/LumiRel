@@ -1,109 +1,272 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useGlobalState, useOptimizedMemo, useOptimizedCallback } from "@/app/hooks";
-import debounce from "lodash.debounce";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import {
+  useRouter,
+} from "next/navigation";
+
+import {
+  useGlobalState,
+  useOptimizedMemo,
+} from "@/app/hooks";
+
+import type {
+  Film,
+} from "@/app/redux/features/apiSlice/apiSlice";
+
 import "./searchButton.css";
 
-interface Movie {
-  id: number;
-  title: string;
-  poster?: string;
-}
+const SearchComponent = () => {
+  const inputRef =
+    useRef<HTMLInputElement>(
+      null
+    );
 
-const SearchComponent: React.FC = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState(""); 
-  const [isExpanded, setIsExpanded] = useState(false);
-  const { films: allMovies, dispatch, getFilms } = useGlobalState();
-  const router = useRouter();
+  const [
+    query,
+    setQuery,
+  ] =
+    useState("");
+
+  const [
+    debouncedQuery,
+    setDebouncedQuery,
+  ] =
+    useState("");
+
+  const [
+    isExpanded,
+    setIsExpanded,
+  ] =
+    useState(false);
+
+  const {
+    films: allMovies,
+    dispatch,
+    getFilms,
+  } = useGlobalState();
+
+  const router =
+    useRouter();
 
   useEffect(() => {
-    if (!allMovies.length) {
-      dispatch(getFilms());
+    if (
+      allMovies.length ===
+      0
+    ) {
+      dispatch(
+        getFilms()
+      );
     }
-  }, [dispatch, allMovies.length]);
+  }, [
+    dispatch,
+    allMovies.length,
+    getFilms,
+  ]);
 
   useEffect(() => {
-    const handler = debounce(() => {
-      setDebouncedQuery(query);
-    }, 300);
+    const timer =
+      window.setTimeout(
+        () => {
+          setDebouncedQuery(
+            query
+          );
+        },
+        300
+      );
 
-    handler();
-    return () => handler.cancel();
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
   }, [query]);
 
-  const filteredMovies = useOptimizedMemo(() => {
-    if (!debouncedQuery.trim()) return [];
-    return allMovies.filter((movie) =>
-      movie.title.toLowerCase().includes(debouncedQuery.toLowerCase())
+  const filteredMovies =
+    useOptimizedMemo<
+      Film[]
+    >(() => {
+      const normalized =
+        debouncedQuery
+          .trim()
+          .toLowerCase();
+
+      if (!normalized) {
+        return [];
+      }
+
+      return allMovies.filter(
+        (movie) =>
+          movie.title
+            .toLowerCase()
+            .includes(
+              normalized
+            )
+      );
+    }, [
+      debouncedQuery,
+      allMovies,
+    ]);
+
+  const handleSuggestionClick =
+    useCallback(
+      (
+        movie: Film
+      ) => {
+        router.push(
+          `/main/${movie.id}`
+        );
+
+        setQuery("");
+
+        setDebouncedQuery(
+          ""
+        );
+
+        setIsExpanded(
+          false
+        );
+      },
+      [router]
     );
-  }, [debouncedQuery, allMovies]);
 
-  const handleSuggestionClick = useOptimizedCallback((movie: Movie) => {
-    router.push(`/main/${movie.id}`);
-    setQuery("");
-    setIsExpanded(false);
-  }, []);
+  const handleSearchButtonClick =
+    () => {
+      const firstMovie =
+        filteredMovies[0];
 
-  const handleSearchButtonClick = () => {
-    if (filteredMovies.length > 0) {
-      handleSuggestionClick(filteredMovies[0]);
-    }
-  };
+      if (firstMovie) {
+        handleSuggestionClick(
+          firstMovie
+        );
+      }
+    };
 
   return (
     <div className="search-container">
-      <div className={`search-box ${isExpanded ? "expanded" : "collapsed"}`}>
+      <div
+        className={`search-box ${
+          isExpanded
+            ? "expanded"
+            : "collapsed"
+        }`}
+      >
         <input
-          ref={inputRef}
+          ref={
+            inputRef
+          }
           type="text"
           className="search-input"
           placeholder="Film adı yaz..."
-          value={query} 
-          onChange={(e) => setQuery(e.target.value)} 
-          onFocus={() => setIsExpanded(true)}
+          value={
+            query
+          }
+          onChange={(
+            event
+          ) =>
+            setQuery(
+              event.target
+                .value
+            )
+          }
+          onFocus={() =>
+            setIsExpanded(
+              true
+            )
+          }
           onBlur={() => {
-            setTimeout(() => {
-              setIsExpanded(false);
-              setQuery(""); 
-            }, 200);
+            window.setTimeout(
+              () => {
+                setIsExpanded(
+                  false
+                );
+
+                setQuery("");
+              },
+              200
+            );
           }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && filteredMovies.length > 0) {
-              handleSuggestionClick(filteredMovies[0]);
+          onKeyDown={(
+            event
+          ) => {
+            if (
+              event.key ===
+              "Enter"
+            ) {
+              const firstMovie =
+                filteredMovies[
+                  0
+                ];
+
+              if (
+                firstMovie
+              ) {
+                handleSuggestionClick(
+                  firstMovie
+                );
+              }
             }
           }}
         />
+
         <button
+          type="button"
           className="search-button"
-          onClick={handleSearchButtonClick}
+          onClick={
+            handleSearchButtonClick
+          }
         >
           🔍
         </button>
       </div>
 
-      {(debouncedQuery.trim() !== "") && (
+      {debouncedQuery.trim() !==
+        "" && (
         <div className="search-results">
-          {filteredMovies.length > 0 ? (
+          {filteredMovies.length >
+          0 ? (
             <ul className="search-suggestions">
-              {filteredMovies.map((movie) => (
-                <li
-                  key={movie.id}
-                  className="search-suggestion-item"
-                  onClick={() => handleSuggestionClick(movie)}
-                >
-                  <div className="sugItem">
-                    <img src={movie.poster} alt="" />
-                    {movie.title}
-                  </div>
-                </li>
-              ))}
+              {filteredMovies.map(
+                (movie) => (
+                  <li
+                    key={
+                      movie.id
+                    }
+                    className="search-suggestion-item"
+                    onClick={() =>
+                      handleSuggestionClick(
+                        movie
+                      )
+                    }
+                  >
+                    <div className="sugItem">
+                      <img
+                        src={
+                          movie.poster
+                        }
+                        alt={
+                          movie.title
+                        }
+                      />
+
+                      {
+                        movie.title
+                      }
+                    </div>
+                  </li>
+                )
+              )}
             </ul>
           ) : (
-            <div className="no-results">Film tapılmadı</div>
+            <div className="no-results">
+              Film tapılmadı
+            </div>
           )}
         </div>
       )}

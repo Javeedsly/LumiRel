@@ -3,42 +3,133 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
+
+import type {
+  RootState,
+} from "@/app/redux/store/store";
+
+type AdminRole =
+  | "superadmin"
+  | "filmadmin"
+  | "useradmin";
+
+interface StoredAdmin {
+  id?: number;
+  name?: string;
+  avatar?: string;
+  password?: string;
+  role?: AdminRole;
+}
+
+const isValidAdminRole = (
+  role: unknown
+): role is AdminRole => {
+  return (
+    role === "superadmin" ||
+    role === "filmadmin" ||
+    role === "useradmin"
+  );
+};
+
+const getAdminRoute = (
+  role: AdminRole
+): string => {
+  switch (role) {
+    case "superadmin":
+      return "/admin/superadmin";
+
+    case "filmadmin":
+      return "/admin/filmadmin";
+
+    case "useradmin":
+      return "/admin/useradmin";
+
+    default:
+      return "/admin/login";
+  }
+};
 
 const AdminPage = () => {
   const router = useRouter();
-  const admin = useSelector((state: RootState) => state.admin.loggedInAdmin); 
+
+  const currentAdmin =
+    useSelector(
+      (state: RootState) =>
+        state.admin.currentAdmin
+    );
 
   useEffect(() => {
-    const storedAdmin = JSON.parse(localStorage.getItem("admin") || "null");
+    let admin:
+      StoredAdmin | null =
+      currentAdmin;
 
-    if (!storedAdmin) {
-      router.push("/admin/login"); 
+    if (!admin) {
+      const storedAdmin =
+        localStorage.getItem(
+          "admin"
+        );
+
+      if (storedAdmin) {
+        try {
+          admin =
+            JSON.parse(
+              storedAdmin
+            ) as StoredAdmin;
+        } catch (error) {
+          console.error(
+            "Admin məlumatını oxumaq mümkün olmadı:",
+            error
+          );
+
+          localStorage.removeItem(
+            "admin"
+          );
+
+          router.replace(
+            "/admin/login"
+          );
+
+          return;
+        }
+      }
+    }
+
+    if (!admin) {
+      router.replace(
+        "/admin/login"
+      );
+
       return;
     }
 
-    const validRoles = ["superadmin", "filmadmin", "useradmin"];
+    if (
+      !isValidAdminRole(
+        admin.role
+      )
+    ) {
+      localStorage.removeItem(
+        "admin"
+      );
 
-    if (!validRoles.includes(storedAdmin.role)) {
-      localStorage.removeItem("admin"); 
-      router.push("/admin/login");
+      router.replace(
+        "/admin/login"
+      );
+
       return;
     }
 
-    const expectedPath =
-      storedAdmin.role === "superadmin"
-        ? "/admin/superadmin"
-        : storedAdmin.role === "filmadmin"
-        ? "/admin/filmadmin"
-        : "/admin/useradmin";
+    const adminRoute =
+      getAdminRoute(
+        admin.role
+      );
 
-    if (window.location.pathname !== expectedPath) {
-      localStorage.removeItem("admin");
-      router.push("/admin/login");
-    } else {
-      router.push(expectedPath);
-    }
-  }, [router, admin]);
+    router.replace(
+      adminRoute
+    );
+  }, [
+    router,
+    currentAdmin,
+  ]);
 
   return null;
 };

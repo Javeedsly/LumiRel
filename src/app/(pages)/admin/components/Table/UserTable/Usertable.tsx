@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Link from "next/link";
+
 import {
   Table,
   TableBody,
@@ -12,87 +14,380 @@ import {
   Paper,
   Typography,
   TextField,
-  Button,
   Switch,
   Pagination,
   MenuItem,
   Select,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
-import { AppDispatch, RootState } from "@/app/redux/store/store";
-import { getLogin, updateUserProfile } from "@/app/redux/features/authSlice/loginSlice";
-import Link from "next/link";
+
+import type {
+  AppDispatch,
+  RootState,
+} from "@/app/redux/store/store";
+
+import {
+  getLogin,
+  updateUserProfile,
+} from "@/app/redux/features/authSlice/loginSlice";
+
 import "./table.css";
 
-const UsersTable = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { users: reduxUsers } = useSelector((state: RootState) => state.auth);
+interface UserRow {
+  id: string;
 
-  const [users, setUsers] = useState(reduxUsers);
-  const [filter, setFilter] = useState("all");
-  const [sortOrder, setSortOrder] = useState("az");
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  name?: string;
+  surname?: string;
+
+  firstName?: string;
+  lastName?: string;
+
+  username?: string;
+
+  email?: string;
+  password?: string;
+
+  profileImage?: string;
+
+  isPremium?: boolean;
+
+  createdAt?: string;
+
+  premiumStartDate?: string | null;
+  premiumCancelDate?: string | null;
+
+  cardNumber?: string;
+}
+
+type UserFilter =
+  | "all"
+  | "premium"
+  | "normal";
+
+type SortOrder =
+  | "az"
+  | "za"
+  | "newest"
+  | "oldest";
+
+const DEFAULT_AVATAR =
+  "https://i.pinimg.com/736x/20/e8/36/20e836d27bea68d015f0da6694151466.jpg";
+
+const UsersTable = () => {
+  const dispatch =
+    useDispatch<AppDispatch>();
+
+  const reduxUsers =
+    useSelector(
+      (state: RootState) =>
+        state.auth.users
+    ) as UserRow[];
+
+  const [
+    users,
+    setUsers,
+  ] = useState<UserRow[]>(
+    reduxUsers
+  );
+
+  const [
+    filter,
+    setFilter,
+  ] = useState<UserFilter>(
+    "all"
+  );
+
+  const [
+    sortOrder,
+    setSortOrder,
+  ] = useState<SortOrder>(
+    "az"
+  );
+
+  const [
+    search,
+    setSearch,
+  ] = useState("");
+
+  const [
+    page,
+    setPage,
+  ] = useState(1);
+
   const usersPerPage = 5;
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     dispatch(getLogin());
   }, [dispatch]);
 
   useEffect(() => {
-    setUsers(reduxUsers);
+    setUsers(
+      Array.isArray(
+        reduxUsers
+      )
+        ? reduxUsers
+        : []
+    );
   }, [reduxUsers]);
 
-  const handlePremiumToggle = async (user: any) => {
-    const updatedUser = { ...user, isPremium: !user.isPremium };
+  useEffect(() => {
+    setPage(1);
+  }, [
+    filter,
+    sortOrder,
+    search,
+  ]);
 
-    setUsers((prevUsers) =>
-      prevUsers.map((u) => (u.id === user.id ? updatedUser : u))
+  const handlePremiumToggle =
+    async (
+      user: UserRow
+    ) => {
+      const updatedUser:
+        UserRow = {
+        ...user,
+
+        isPremium:
+          !Boolean(
+            user.isPremium
+          ),
+      };
+
+      // UI-da dərhal göstəririk.
+      setUsers(
+        (prevUsers) =>
+          prevUsers.map(
+            (currentUser) =>
+              currentUser.id ===
+              user.id
+                ? updatedUser
+                : currentUser
+          )
+      );
+
+      try {
+        await dispatch(
+          updateUserProfile({
+            id: user.id,
+            updatedData:
+              updatedUser,
+          })
+        ).unwrap();
+      } catch (error) {
+        console.error(
+          "User premium update error:",
+          error
+        );
+
+        // API xətası olsa əvvəlki vəziyyətə qaytarırıq.
+        setUsers(
+          (prevUsers) =>
+            prevUsers.map(
+              (
+                currentUser
+              ) =>
+                currentUser.id ===
+                user.id
+                  ? user
+                  : currentUser
+            )
+        );
+      }
+    };
+
+  const normalizedSearch =
+    search
+      .trim()
+      .toLowerCase();
+
+  const filteredUsers =
+    useMemo(() => {
+      return [...users]
+        .filter(
+          (user) => {
+            const firstName =
+              user.name ??
+              user.firstName ??
+              "";
+
+            const lastName =
+              user.surname ??
+              user.lastName ??
+              "";
+
+            const fullName =
+              `${firstName} ${lastName}`
+                .trim()
+                .toLowerCase();
+
+            const username =
+              (
+                user.username ??
+                ""
+              ).toLowerCase();
+
+            const email =
+              (
+                user.email ??
+                ""
+              ).toLowerCase();
+
+            const isPremium =
+              Boolean(
+                user.isPremium
+              );
+
+            const isPremiumMatch =
+              filter === "all"
+                ? true
+                : filter ===
+                    "premium"
+                  ? isPremium
+                  : !isPremium;
+
+            const isSearchMatch =
+              normalizedSearch ===
+                "" ||
+              fullName.includes(
+                normalizedSearch
+              ) ||
+              username.includes(
+                normalizedSearch
+              ) ||
+              email.includes(
+                normalizedSearch
+              );
+
+            return (
+              isPremiumMatch &&
+              isSearchMatch
+            );
+          }
+        )
+        .sort(
+          (a, b) => {
+            const aName =
+              (
+                a.name ??
+                a.firstName ??
+                a.username ??
+                ""
+              ).toLowerCase();
+
+            const bName =
+              (
+                b.name ??
+                b.firstName ??
+                b.username ??
+                ""
+              ).toLowerCase();
+
+            if (
+              sortOrder ===
+              "az"
+            ) {
+              return aName.localeCompare(
+                bName
+              );
+            }
+
+            if (
+              sortOrder ===
+              "za"
+            ) {
+              return bName.localeCompare(
+                aName
+              );
+            }
+
+            if (
+              sortOrder ===
+              "newest"
+            ) {
+              const aTime =
+                a.createdAt
+                  ? new Date(
+                      a.createdAt
+                    ).getTime()
+                  : 0;
+
+              const bTime =
+                b.createdAt
+                  ? new Date(
+                      b.createdAt
+                    ).getTime()
+                  : 0;
+
+              return (
+                bTime -
+                aTime
+              );
+            }
+
+            if (
+              sortOrder ===
+              "oldest"
+            ) {
+              const aTime =
+                a.createdAt
+                  ? new Date(
+                      a.createdAt
+                    ).getTime()
+                  : 0;
+
+              const bTime =
+                b.createdAt
+                  ? new Date(
+                      b.createdAt
+                    ).getTime()
+                  : 0;
+
+              return (
+                aTime -
+                bTime
+              );
+            }
+
+            return 0;
+          }
+        );
+    }, [
+      users,
+      filter,
+      sortOrder,
+      normalizedSearch,
+    ]);
+
+  const totalPages =
+    Math.max(
+      1,
+      Math.ceil(
+        filteredUsers.length /
+          usersPerPage
+      )
     );
 
-    await dispatch(updateUserProfile({ id: user.id, updatedData: updatedUser }));
-  };
+  const safePage =
+    Math.min(
+      page,
+      totalPages
+    );
 
-  const handleDeleteUser = () => {
-    if (selectedUser) {
-      console.log("Deleting user:", selectedUser.id);
-      setOpenDialog(false);
-    }
-  };
+  const startIndex =
+    (safePage - 1) *
+    usersPerPage;
 
-  const openDeleteModal = (user: any) => {
-    setSelectedUser(user);
-    setOpenDialog(true);
-  };
-
-  const filteredUsers = users
-    .filter((user: any) => {
-      const fullName = `${user.name || ""} ${user.surname || ""}`.trim();
-      const isPremiumMatch =
-        filter === "all" || (filter === "premium" ? user.isPremium : !user.isPremium);
-      const isSearchMatch =
-        fullName.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase());
-      return isPremiumMatch && isSearchMatch;
-    })
-    .sort((a, b) => {
-      if (sortOrder === "az") return a.name.localeCompare(b.name);
-      if (sortOrder === "za") return b.name.localeCompare(a.name);
-      if (sortOrder === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      if (sortOrder === "oldest") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      return 0;
-    });
-
-  const paginatedUsers = filteredUsers.slice((page - 1) * usersPerPage, page * usersPerPage);
+  const paginatedUsers =
+    filteredUsers.slice(
+      startIndex,
+      startIndex +
+        usersPerPage
+    );
 
   return (
     <div className="users-container">
-      <Typography variant="h5" className="table-title">
+      <Typography
+        variant="h5"
+        className="table-title"
+      >
         Users Management
       </Typography>
 
@@ -102,97 +397,219 @@ const UsersTable = () => {
           variant="outlined"
           size="small"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(event) =>
+            setSearch(
+              event.target
+                .value
+            )
+          }
           className="search-field"
         />
 
-        <Select value={filter} onChange={(e) => setFilter(e.target.value)} className="filter-select">
-          <MenuItem value="all">All Users</MenuItem>
-          <MenuItem value="premium">Premium</MenuItem>
-          <MenuItem value="normal">Normal</MenuItem>
+        <Select<UserFilter>
+          value={filter}
+          onChange={(event) =>
+            setFilter(
+              event.target
+                .value as UserFilter
+            )
+          }
+          className="filter-select"
+        >
+          <MenuItem value="all">
+            All Users
+          </MenuItem>
+
+          <MenuItem value="premium">
+            Premium
+          </MenuItem>
+
+          <MenuItem value="normal">
+            Normal
+          </MenuItem>
         </Select>
 
-        <Select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} className="filter-select">
-          <MenuItem value="az">A-Z</MenuItem>
-          <MenuItem value="za">Z-A</MenuItem>
-          <MenuItem value="newest">Newest to Oldest</MenuItem>
-          <MenuItem value="oldest">Oldest to Newest</MenuItem>
+        <Select<SortOrder>
+          value={
+            sortOrder
+          }
+          onChange={(event) =>
+            setSortOrder(
+              event.target
+                .value as SortOrder
+            )
+          }
+          className="filter-select"
+        >
+          <MenuItem value="az">
+            A-Z
+          </MenuItem>
+
+          <MenuItem value="za">
+            Z-A
+          </MenuItem>
+
+          <MenuItem value="newest">
+            Newest to Oldest
+          </MenuItem>
+
+          <MenuItem value="oldest">
+            Oldest to Newest
+          </MenuItem>
         </Select>
       </div>
 
-      <TableContainer component={Paper} className="users-table">
+      <TableContainer
+        component={Paper}
+        className="users-table"
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Profile</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>
+                Profile
+              </TableCell>
+
+              <TableCell>
+                Name
+              </TableCell>
+
+              <TableCell>
+                Email
+              </TableCell>
+
+              <TableCell>
+                Status
+              </TableCell>
+
+              <TableCell>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {paginatedUsers.map((user: any) => (
-              <TableRow key={user.id} className="user-row">
-                <TableCell>
-                  <img
-                    src={user.profileImage || "https://i.pinimg.com/736x/20/e8/36/20e836d27bea68d015f0da6694151466.jpg"}
-                    alt={user.name || "User"}
-                    className="user-avatar"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Link href={`/admin/users/${user.id}`} className="user-link">
-                    {user.name} {user.surname}
-                  </Link>
-                </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell className={user.isPremium ? "premium" : "normal"}>
-                  {user.isPremium ? "Premium" : "Normal"}
-                </TableCell>
-                <TableCell>
-                  <Switch
-                    checked={user.isPremium}
-                    onChange={() => handlePremiumToggle(user)}
-                    color="primary"
-                  />
-                  {/* <Button
-                    variant="contained"
-                    color="error"
-                    size="small"
-                    onClick={() => openDeleteModal(user)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Remove
-                  </Button> */}
+            {paginatedUsers.length >
+            0 ? (
+              paginatedUsers.map(
+                (user) => {
+                  const firstName =
+                    user.name ??
+                    user.firstName ??
+                    "";
+
+                  const lastName =
+                    user.surname ??
+                    user.lastName ??
+                    "";
+
+                  const fullName =
+                    `${firstName} ${lastName}`.trim() ||
+                    user.username ||
+                    "User";
+
+                  const isPremium =
+                    Boolean(
+                      user.isPremium
+                    );
+
+                  return (
+                    <TableRow
+                      key={
+                        user.id
+                      }
+                      className="user-row"
+                    >
+                      <TableCell>
+                        <img
+                          src={
+                            user.profileImage ||
+                            DEFAULT_AVATAR
+                          }
+                          alt={
+                            fullName
+                          }
+                          className="user-avatar"
+                        />
+                      </TableCell>
+
+                      <TableCell>
+                        <Link
+                          href={`/admin/users/${user.id}`}
+                          className="user-link"
+                        >
+                          {
+                            fullName
+                          }
+                        </Link>
+                      </TableCell>
+
+                      <TableCell>
+                        {user.email ??
+                          "-"}
+                      </TableCell>
+
+                      <TableCell
+                        className={
+                          isPremium
+                            ? "premium"
+                            : "normal"
+                        }
+                      >
+                        {isPremium
+                          ? "Premium"
+                          : "Normal"}
+                      </TableCell>
+
+                      <TableCell>
+                        <Switch
+                          checked={
+                            isPremium
+                          }
+                          onChange={() =>
+                            handlePremiumToggle(
+                              user
+                            )
+                          }
+                          color="primary"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                }
+              )
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  align="center"
+                >
+                  No users found.
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <Pagination
-        count={Math.ceil(filteredUsers.length / usersPerPage)}
-        page={page}
-        onChange={(e, value) => setPage(value)}
-        className="pagination"
-      />
-
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Delete User</DialogTitle>
-        <DialogContent>
-          Are you sure you want to remove <b>{selectedUser?.name} {selectedUser?.surname}</b>?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteUser} color="error">
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {filteredUsers.length >
+        usersPerPage && (
+        <Pagination
+          count={
+            totalPages
+          }
+          page={
+            safePage
+          }
+          onChange={(
+            _event,
+            value
+          ) =>
+            setPage(value)
+          }
+          className="pagination"
+        />
+      )}
     </div>
   );
 };

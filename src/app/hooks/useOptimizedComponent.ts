@@ -1,5 +1,9 @@
 import React from "react";
 
-export const useOptimizedComponent = <T extends React.ComponentType<any>>(Component: T): T => {
-  return React.memo(Component) as T;
+export const useOptimizedComponent = <
+  T extends React.ComponentType<any>
+>(
+  Component: T
+): React.MemoExoticComponent<T> => {
+  return React.memo(Component);
 };
