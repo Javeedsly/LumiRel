@@ -29,7 +29,6 @@ import type {
   RootState,
 } from "@/app/redux/store/store";
 
-import SearchButton from "../SearchButton/SearchButton";
 import CategoryModal from "../CategoryModal/CategoryModal";
 import FilmRecommender from "../FIlmRecommender/FilmRecommender";
 
@@ -51,13 +50,10 @@ const Header = () => {
   const [
     menuOpen,
     setMenuOpen,
-  ] =
-    useState(false);
+  ] = useState(false);
 
   useEffect(() => {
-    setMenuOpen(
-      false
-    );
+    setMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -85,9 +81,7 @@ const Header = () => {
         event.key ===
         "Escape"
       ) {
-        setMenuOpen(
-          false
-        );
+        setMenuOpen(false);
       }
     };
 
@@ -113,9 +107,7 @@ const Header = () => {
     href: string
   ) => {
     if (href === "/") {
-      return (
-        pathname === "/"
-      );
+      return pathname === "/";
     }
 
     return pathname.startsWith(
@@ -208,10 +200,6 @@ const Header = () => {
 
         <nav className="header__nav header__nav--right">
           <ul>
-            <li className="header__nav-item header__search-item">
-              <SearchButton />
-            </li>
-
             <li className="header__nav-item">
               <Link
                 className={
@@ -240,9 +228,7 @@ const Header = () => {
 
             <li className="header__profile">
               <Link
-                href={
-                  profileHref
-                }
+                href={profileHref}
                 aria-label={
                   user
                     ? "Open profile"
@@ -305,9 +291,7 @@ const Header = () => {
                 opacity: 0,
               }}
               onClick={() =>
-                setMenuOpen(
-                  false
-                )
+                setMenuOpen(false)
               }
             />
 
@@ -336,8 +320,6 @@ const Header = () => {
                 <CategoryModal />
 
                 <FilmRecommender />
-
-                <SearchButton />
               </div>
 
               <nav>
@@ -385,9 +367,7 @@ const Header = () => {
 
                 <Link
                   className="header__mobile-profile"
-                  href={
-                    profileHref
-                  }
+                  href={profileHref}
                 >
                   <img
                     src={
