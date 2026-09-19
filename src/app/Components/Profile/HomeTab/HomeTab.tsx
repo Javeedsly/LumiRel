@@ -1,44 +1,96 @@
 "use client";
 
-import React from "react";
+import {
+  FaHeart,
+  FaFilm,
+} from "react-icons/fa";
+
+import type {
+  User,
+} from "@/app/redux/features/authSlice/loginSlice";
+
 import "./homeTab.css";
-import { FaHeart, FaStar, FaFilm, FaUser } from "react-icons/fa";
 
 interface HomeTabProps {
-    user: {
-        profileImage?: string;
-        email?: string;
-        name?: string;
-        surname?: string;
-        isPremium?: boolean;
-        wishlist?: any[];
-    };
+  user: User;
 }
 
-const HomeTab: React.FC<HomeTabProps> = ({ user }) => {
-    return (
-        <div className="home-tab">
-            <div className="profile-overview">
-                <img src={user?.profileImage || "https://i.pinimg.com/736x/20/e8/36/20e836d27bea68d015f0da6694151466.jpg"} alt="Profil Resmi" className="profile-img" />
-                <div className="profile-info">
-                    <h2>{user?.name} {user?.surname}</h2>
-                    <p className="email">{user?.email}</p>
-                    {user?.isPremium && <span className="premium-badge">🌟 Premium Kullanıcı</span>}
-                </div>
-            </div>
+const DEFAULT_AVATAR =
+  "https://i.pinimg.com/736x/20/e8/36/20e836d27bea68d015f0da6694151466.jpg";
 
-            <div className="profile-stats">
-                <div className="stat-card">
-                    <FaHeart className="stat-icon" />
-                    <p><strong>{user?.wishlist?.length || 0}</strong> Beğenilen Filmler</p>
-                </div>
-                <div className="stat-card">
-                    <FaStar className="stat-icon" />
-                    <p><strong>{user?.isPremium ? "Aktif" : "Pasif"}</strong> Premium Durumu</p>
-                </div>
-            </div>
+const HomeTab = ({
+  user,
+}: HomeTabProps) => {
+  const fullName =
+    [
+      user.name,
+      user.surname,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim() ||
+    user.username ||
+    "LumiReel User";
+
+  return (
+    <div className="home-tab">
+      <div className="profile-overview">
+        <img
+          src={
+            user.profileImage ||
+            DEFAULT_AVATAR
+          }
+          alt={
+            fullName
+          }
+          className="profile-img"
+        />
+
+        <div className="profile-info">
+          <h2>
+            {
+              fullName
+            }
+          </h2>
+
+          <p className="email">
+            {
+              user.email
+            }
+          </p>
         </div>
-    );
+      </div>
+
+      <div className="profile-stats">
+        <div className="stat-card">
+          <FaHeart className="stat-icon" />
+
+          <p>
+            <strong>
+              {user.wishlist
+                ?.length ??
+                0}
+            </strong>{" "}
+            Saved Movies
+          </p>
+        </div>
+
+        <div className="stat-card">
+          <FaFilm className="stat-icon" />
+
+          <p>
+            <strong>
+              Full Access
+            </strong>
+
+            <br />
+
+            All Movies
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default HomeTab;

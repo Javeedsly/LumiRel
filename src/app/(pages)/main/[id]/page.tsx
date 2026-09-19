@@ -251,10 +251,7 @@ const Detail = () => {
     user?.profileImage ||
     "/default-avatar.jpg";
 
-  const isPremium =
-    Boolean(
-      user?.isPremium
-    );
+ 
 
   useEffect(() => {
     if (
@@ -931,23 +928,7 @@ const Detail = () => {
 
         <section>
           <div className="fullmovie">
-            {!isPremium && (
-              <div className="locked-overlay">
-                <p>
-                  Bu filmi izləmək
-                  üçün premium
-                  olmalısınız.
-                </p>
-              </div>
-            )}
-
-            <div
-              className={`fullTop ${
-                !isPremium
-                  ? "blurred"
-                  : ""
-              }`}
-            >
+           <div className="fullTop">
               <iframe
                 width="100%"
                 height="100%"

@@ -1,134 +1,317 @@
 .custom-wrapper {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    clamp(
+      18px,
+      3vw,
+      32px
+    );
+
+  width: min(
+    90%,
+    1320px
+  );
+
+  margin:
+    clamp(
+      30px,
+      6vw,
+      70px
+    )
+    auto;
+
+  padding: 10px 0;
+}
+
+.custom-box {
+  min-width: 0;
+
+  aspect-ratio:
+    3 / 4;
+
+  overflow: hidden;
+
+  border-radius:
+    14px;
+}
+
+.custom-item {
+  position: relative;
+
   display: flex;
-  width: 90%;
-  margin: 30px auto;
-  gap: 30px;
-  flex-wrap: wrap;
-  padding: 30px 0;
-  justify-content: space-around;
+  align-items: center;
+  justify-content:
+    center;
 
-  .custom-box {
-    width: 410px;
-    height: 550px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  width: 100%;
+  height: 100%;
 
-    &:hover .wishIcon {
-      opacity: 1;
-    }
+  overflow: hidden;
 
-    .wishIcon {
-      position: absolute;
-      z-index: 1;
-      right: 5px;
-      top: 8px;
-      transition: 0.4s;
-      opacity: 0;
-    }
-  }
+  border-radius:
+    14px;
 
-  .custom-item {
-    height: 540px;
-    width: 400px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  isolation: isolate;
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-    }
+  background: #111;
 
-    .linelike {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 24px;
-      z-index: 9999;
-    }
+  box-shadow:
+    0 15px 40px
+      rgba(
+        0,
+        0,
+        0,
+        0.4
+      );
 
-    .custom-text {
-      color: white;
-      font-size: 24px;
-      background: #000000ec;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
-      padding: 30px 0 5px 0;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
 
-      h5 {
-        color: gold;
-        cursor: pointer;
-      }
+.custom-item:hover {
+  transform:
+    translateY(-6px);
 
-      span {
-        font-size: 15px;
-        color: rgb(113, 8, 169);
+  box-shadow:
+    0 20px 50px
+      rgba(
+        128,
+        52,
+        243,
+        0.16
+      );
+}
 
-        em {
-          color: #fff;
-        }
-      }
-    }
+.custom-item > img {
+  position: absolute;
+  inset: 0;
 
-    &::before {
-      content: "";
-      position: absolute;
-      width: 180%;
-      height: 50%;
-      background: #0f0;
-      filter: hue-rotate(var(--a));
-      transform: rotate(var(--a));
-      animation: Rotation 6s linear infinite;
-    }
+  z-index: -2;
 
-    &::after {
-      content: "";
-      inset: 5px;
-    }
-  }
+  width: 100%;
+  height: 100%;
 
+  object-fit: cover;
+
+  transition:
+    transform 0.7s ease;
+}
+
+.custom-item:hover
+  > img {
+  transform:
+    scale(1.045);
+}
+
+.custom-item::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: -1;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent 45%,
+      rgba(
+        0,
+        0,
+        0,
+        0.93
+      )
+        100%
+    );
+
+  pointer-events:
+    none;
+}
+
+.custom-item::before {
+  content: "";
+
+  position: absolute;
+
+  z-index: -3;
+
+  width: 150%;
+  height: 40%;
+
+  background:
+    linear-gradient(
+      90deg,
+      #00ff91,
+      #8034f3,
+      #00d9ff
+    );
+
+  animation:
+    cardRotation
+    8s
+    linear
+    infinite;
+}
+
+.wishIcon {
+  position: absolute;
+
+  z-index: 5;
+
+  top: 10px;
+  right: 10px;
+
+  opacity: 0;
+
+  transform:
+    translateY(-5px);
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.custom-box:hover
+  .wishIcon {
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.custom-text {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 4;
+
+  padding:
+    34px 15px
+    14px;
+
+  text-align:
+    center;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(
+        0,
+        0,
+        0,
+        0.93
+      )
+        40%
+    );
+}
+
+.custom-text h5 {
+  color: gold;
+
+  font-size:
+    clamp(
+      17px,
+      2vw,
+      23px
+    );
+
+  cursor: pointer;
+}
+
+.custom-wrapper
   .imdb {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    margin: 10px 0;
-    gap: 5px;
-  }
+  display: flex;
+  align-items: center;
+  justify-content:
+    center;
+  flex-wrap: wrap;
 
-  .custom-icon {
-    font-size: 100px;
-    color: #fff;
-    transition: 0.5s;
-    position: absolute;
-    z-index: 999;
+  gap: 5px;
+
+  margin:
+    8px 0 0;
+}
+
+.custom-wrapper
+  .imdb span {
+  color:
+    #9453c8;
+
+  font-size:
+    13px;
+}
+
+.custom-wrapper
+  .imdb em {
+  color: white;
+
+  font-style:
+    normal;
+}
+
+@keyframes cardRotation {
+  to {
+    transform:
+      rotate(360deg);
   }
 }
 
-@property --a {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
+@media (
+  hover: none
+) {
+  .wishIcon {
+    opacity: 1;
+
+    transform:
+      none;
+  }
 }
 
-@keyframes Rotation {
-  0% {
-    --a: 0deg;
+@media (
+  max-width:
+    950px
+) {
+  .custom-wrapper {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
   }
-  100% {
-    --a: 360deg;
+}
+
+@media (
+  max-width:
+    560px
+) {
+  .custom-wrapper {
+    grid-template-columns:
+      1fr;
+
+    width:
+      calc(
+        100% -
+        32px
+      );
+
+    max-width:
+      420px;
   }
 }
