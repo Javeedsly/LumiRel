@@ -174,27 +174,28 @@
 .header__logo {
   position: absolute;
 
-  top: 50%;
+  top: 0;
+  bottom: 0;
   left: 50%;
 
   z-index: 4;
 
-  transform:
-    translate(
-      -50%,
-      -50%
-    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  pointer-events: auto;
+  translate: -50% 0;
+
+  pointer-events: none;
 }
 
 .header__logo a {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 
   padding:
-    7px
+    0
     15px;
 
   color: #e5def2;
@@ -218,6 +219,11 @@
     -0.045em;
 
   white-space: nowrap;
+
+  pointer-events: auto;
+
+  transform:
+    translateY(-1px);
 
   text-shadow:
     0 0 20px
@@ -494,18 +500,23 @@
     display: none;
   }
 
-  .header__logo {
+   .header__logo {
     position: static;
+
+    display: flex;
 
     margin-right: auto;
 
-    transform: none;
+    translate: none;
   }
 
   .header__logo a {
     padding: 0;
 
     font-size: 26px;
+
+    transform:
+      translateY(-1px);
   }
 
   .header__mobile-toggle {

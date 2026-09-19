@@ -1,33 +1,18 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import Link from "next/link";
 
-import {
-  usePathname,
-} from "next/navigation";
+import { usePathname } from "next/navigation";
 
-import {
-  AnimatePresence,
-  motion,
-} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
-import {
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 
-import {
-  useSelector,
-} from "react-redux";
+import { useSelector } from "react-redux";
 
-import type {
-  RootState,
-} from "@/app/redux/store/store";
+import type { RootState } from "@/app/redux/store/store";
 
 import CategoryModal from "../CategoryModal/CategoryModal";
 import FilmRecommender from "../FIlmRecommender/FilmRecommender";
@@ -38,19 +23,11 @@ const DEFAULT_AVATAR =
   "https://i.pinimg.com/736x/20/e8/36/20e836d27bea68d015f0da6694151466.jpg";
 
 const Header = () => {
-  const pathname =
-    usePathname();
+  const pathname = usePathname();
 
-  const user =
-    useSelector(
-      (state: RootState) =>
-        state.auth.user
-    );
+  const user = useSelector((state: RootState) => state.auth.user);
 
-  const [
-    menuOpen,
-    setMenuOpen,
-  ] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -58,71 +35,44 @@ const Header = () => {
 
   useEffect(() => {
     if (!menuOpen) {
-      document.body.style.overflow =
-        "";
+      document.body.style.overflow = "";
 
       return;
     }
 
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow =
-        "";
+      document.body.style.overflow = "";
     };
   }, [menuOpen]);
 
   useEffect(() => {
-    const handleEscape = (
-      event: KeyboardEvent
-    ) => {
-      if (
-        event.key ===
-        "Escape"
-      ) {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
         setMenuOpen(false);
       }
     };
 
-    window.addEventListener(
-      "keydown",
-      handleEscape
-    );
+    window.addEventListener("keydown", handleEscape);
 
     return () => {
-      window.removeEventListener(
-        "keydown",
-        handleEscape
-      );
+      window.removeEventListener("keydown", handleEscape);
     };
   }, []);
 
-  const profileHref =
-    user
-      ? "/main/profile"
-      : "/main/auth/login";
+  const profileHref = user ? "/main/profile" : "/main/auth/login";
 
-  const isActive = (
-    href: string
-  ) => {
+  const isActive = (href: string) => {
     if (href === "/") {
       return pathname === "/";
     }
 
-    return pathname.startsWith(
-      href
-    );
+    return pathname.startsWith(href);
   };
 
-  const linkClass = (
-    href: string
-  ) =>
-    `header__link ${
-      isActive(href)
-        ? "header__link--active"
-        : ""
-    }`;
+  const linkClass = (href: string) =>
+    `header__link ${isActive(href) ? "header__link--active" : ""}`;
 
   return (
     <motion.header
@@ -137,12 +87,7 @@ const Header = () => {
       }}
       transition={{
         duration: 0.5,
-        ease: [
-          0.22,
-          1,
-          0.36,
-          1,
-        ],
+        ease: [0.22, 1, 0.36, 1],
       }}
     >
       <div className="header__container">
@@ -153,23 +98,14 @@ const Header = () => {
             </li>
 
             <li className="header__nav-item">
-              <Link
-                className={
-                  linkClass("/")
-                }
-                href="/"
-              >
+              <Link className={linkClass("/")} href="/">
                 Home
               </Link>
             </li>
 
             <li className="header__nav-item">
               <Link
-                className={
-                  linkClass(
-                    "/main/allfilms"
-                  )
-                }
+                className={linkClass("/main/allfilms")}
                 href="/main/allfilms"
               >
                 Movies
@@ -182,46 +118,20 @@ const Header = () => {
           </ul>
         </nav>
 
-        <motion.div
-          className="header__logo"
-          whileHover={{
-            scale: 1.03,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 18,
-          }}
-        >
-          <Link href="/">
-            LumiReel
-          </Link>
-        </motion.div>
+        <div className="header__logo">
+          <Link href="/">LumiReel</Link>
+        </div>
 
         <nav className="header__nav header__nav--right">
           <ul>
             <li className="header__nav-item">
-              <Link
-                className={
-                  linkClass(
-                    "/main/about"
-                  )
-                }
-                href="/main/about"
-              >
+              <Link className={linkClass("/main/about")} href="/main/about">
                 About
               </Link>
             </li>
 
             <li className="header__nav-item">
-              <Link
-                className={
-                  linkClass(
-                    "/main/actors"
-                  )
-                }
-                href="/main/actors"
-              >
+              <Link className={linkClass("/main/actors")} href="/main/actors">
                 Actors
               </Link>
             </li>
@@ -229,18 +139,11 @@ const Header = () => {
             <li className="header__profile">
               <Link
                 href={profileHref}
-                aria-label={
-                  user
-                    ? "Open profile"
-                    : "Sign in"
-                }
+                aria-label={user ? "Open profile" : "Sign in"}
               >
                 <img
                   className="header__profile-img"
-                  src={
-                    user?.profileImage ||
-                    DEFAULT_AVATAR
-                  }
+                  src={user?.profileImage || DEFAULT_AVATAR}
                   alt="Profile"
                 />
               </Link>
@@ -251,26 +154,11 @@ const Header = () => {
         <button
           type="button"
           className="header__mobile-toggle"
-          onClick={() =>
-            setMenuOpen(
-              (previous) =>
-                !previous
-            )
-          }
-          aria-label={
-            menuOpen
-              ? "Close menu"
-              : "Open menu"
-          }
-          aria-expanded={
-            menuOpen
-          }
+          onClick={() => setMenuOpen((previous) => !previous)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
         >
-          {menuOpen ? (
-            <FaTimes />
-          ) : (
-            <FaBars />
-          )}
+          {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
       </div>
 
@@ -290,9 +178,7 @@ const Header = () => {
               exit={{
                 opacity: 0,
               }}
-              onClick={() =>
-                setMenuOpen(false)
-              }
+              onClick={() => setMenuOpen(false)}
             />
 
             <motion.div
@@ -322,65 +208,29 @@ const Header = () => {
               </div>
 
               <nav>
-                <Link
-                  className={
-                    linkClass("/")
-                  }
-                  href="/"
-                >
+                <Link className={linkClass("/")} href="/">
                   Home
                 </Link>
 
                 <Link
-                  className={
-                    linkClass(
-                      "/main/allfilms"
-                    )
-                  }
+                  className={linkClass("/main/allfilms")}
                   href="/main/allfilms"
                 >
                   Movies
                 </Link>
 
-                <Link
-                  className={
-                    linkClass(
-                      "/main/actors"
-                    )
-                  }
-                  href="/main/actors"
-                >
+                <Link className={linkClass("/main/actors")} href="/main/actors">
                   Actors
                 </Link>
 
-                <Link
-                  className={
-                    linkClass(
-                      "/main/about"
-                    )
-                  }
-                  href="/main/about"
-                >
+                <Link className={linkClass("/main/about")} href="/main/about">
                   About
                 </Link>
 
-                <Link
-                  className="header__mobile-profile"
-                  href={profileHref}
-                >
-                  <img
-                    src={
-                      user?.profileImage ||
-                      DEFAULT_AVATAR
-                    }
-                    alt=""
-                  />
+                <Link className="header__mobile-profile" href={profileHref}>
+                  <img src={user?.profileImage || DEFAULT_AVATAR} alt="" />
 
-                  <span>
-                    {user
-                      ? "Profile"
-                      : "Sign in"}
-                  </span>
+                  <span>{user ? "Profile" : "Sign in"}</span>
                 </Link>
               </nav>
             </motion.div>
