@@ -129,14 +129,14 @@ const Header = () => {
       className="site-header"
       initial={{
         opacity: 0,
-        y: -24,
+        y: -22,
       }}
       animate={{
         opacity: 1,
         y: 0,
       }}
       transition={{
-        duration: 0.55,
+        duration: 0.5,
         ease: [
           0.22,
           1,
@@ -185,7 +185,7 @@ const Header = () => {
         <motion.div
           className="header__logo"
           whileHover={{
-            scale: 1.035,
+            scale: 1.03,
           }}
           transition={{
             type: "spring",
@@ -299,7 +299,7 @@ const Header = () => {
               className="header__mobile-menu"
               initial={{
                 opacity: 0,
-                y: -15,
+                y: -14,
                 scale: 0.97,
               }}
               animate={{
@@ -313,12 +313,11 @@ const Header = () => {
                 scale: 0.98,
               }}
               transition={{
-                duration: 0.25,
+                duration: 0.24,
               }}
             >
               <div className="header__mobile-tools">
                 <CategoryModal />
-
                 <FilmRecommender />
               </div>
 
